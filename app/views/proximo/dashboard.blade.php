@@ -15,7 +15,18 @@
 <br/>
 <br/>
 
-<p>Messages:</p>
+@if(count($messages))
+	<p>My Messages:</p>
+	<ul>
+		@foreach($messages as $mess)
+			<li>{{ $mess->content }}<br/>-&gt; {{ $mess->created_at }}
+			</li>
+		@endforeach
+	</ul>
+@else
+	<h3>You have not posted any messages, this is very sad</h3>
+@endif
+
 
 
 @stop

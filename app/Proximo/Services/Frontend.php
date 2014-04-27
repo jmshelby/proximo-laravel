@@ -42,4 +42,15 @@ class Frontend {
         return $this->_user;
     }
 
+	public function __call($method, $parameters)
+	{
+		// Forward to proximo manager, with player as first param
+		$callback = array($this->_proximoMan, $method);
+		array_unshift($parameters, $this->getUser());
+		call_user_func_array(
+			$callback,
+			$parameters
+		);
+	}
+
 }

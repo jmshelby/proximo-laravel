@@ -1,12 +1,53 @@
 <?php namespace Proximo;
 
-//use Proximo\Entities\Player;
-//use Proximo\Entities\Player\HeartActivity as PlayerHeartActivity;
+use Proximo\Entities\User;
+use Proximo\Entities\Message;
 //use Proximo\Entities\Player\PoolActivity as PlayerPoolActivity;
 //use Proximo\Entities\Player\Transaction as PlayerTransaction;
 //use Proximo\Entities\Player\Transaction\Dividend as PlayerTransactionDividend;
 
-class ProximoManager {
+class ProximoManager
+{
+
+	public function user($sourceIdentifier, $graceful=false)
+	{
+		$user = null;
+		if ( $sourceIdentifier instanceof User )
+			return $sourceIdentifier;
+
+		if (!is_object($sourceIdentifier))
+			$user = $this->getUserById($sourceIdentifier);
+
+		if (!$user && !$graceful) {
+			// TODO - make custom exception for this
+			throw new Exception("Cannot fetch, unknown user");
+		}
+
+		return $user;
+	}
+
+	public function getUserById($id)
+	{
+		return User::find($id);
+	}
+
+	public function userPostsMessage($user, $message, $lat, $long)
+	{
+		$user = $this->user($user);
+		// TODO - Validate Message
+		// TODO - Location
+		$newMessage = Message::createFromBroadcast($user, $message, $lat, $long);
+		return true;
+	}
+
+	public function getUserMessages($user)
+	{
+		$user = $this->user($user);
+		$messages = $user->messages();
+		$messages->newestFirst();
+		$messages->take(20);
+		return $messages;
+	}
 
 
 

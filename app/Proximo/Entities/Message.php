@@ -1,44 +1,41 @@
 <?php namespace Proximo\Entities;
 
-//class User extends \Proximo\GenePool\Models\Mongo\Root {
-class User extends \Moloquent {
+class Message extends \Moloquent {
 
-	protected $table = 'proximo.user';
-
+	protected $table = 'proximo.message';
 
 	// == Factories ==============================================================
 
-	public static function getFromAuthUser($userId)
+	public static function createFromBroadcast($user, $content, $lat, $long)
 	{
-		if (is_object($userId))
-			$userId = $userId->id;
-		return static::where('auth_user_id',$userId)->first();
-	}
+        $message = new static;
+        $message->user()->associate($user);
+        $message->content = $content;
 
-	public static function createFromAuthUser($user)
-	{
-		if ($player = static::getFromAuthUser($user))
-			return $player;
-        $player = new static;
-        $player->authUser()->associate($user);
-        $player->username = $user->username;
-        $player->save();
-        return $player;
+// TODO - create and attach geo location object
+// Example: { loc : { type : "Point" , coordinates : [ 40, 5 ] } } // has to be in order: long, lat
+$message->loc = array(
+	'type' => 'Point',
+	'coordinates' => array($long, $lat),
+);
+
+        $message->save();
+        return $message;
 	}
 
 	// == Relationships ==========================================================
 
-    public function authUser()
+    public function user()
     {
-        return $this->belongsTo('User', 'auth_user_id');
+        return $this->belongsTo('Proximo\Entities\User');
     }
 
-	public function messages()
+	// == Scopes =================================================================
+
+	public function scopeNewestFirst($q)
 	{
-		return $this->hasMany('Proximo\Entities\Message');
+		return $q->orderBy('created_at', 'desc');
 	}
-
-
 
 
 
