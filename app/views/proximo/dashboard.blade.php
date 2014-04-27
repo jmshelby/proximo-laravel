@@ -6,7 +6,7 @@
 
 {{ Form::open(array('route'=>'proximo.postMessage', 'method'=>'POST')) }}
 	{{ Form::label('content', 'Post New Message') }}<br/>
-	{{ Form::text('content', Input::old('content') ) }}
+	{{ Form::textArea('content', Input::old('content') ) }}
 	{{ Form::submit('Broadcast!') }}
 {{ Form::close() }}
 

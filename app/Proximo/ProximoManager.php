@@ -46,7 +46,7 @@ class ProximoManager
 		$messages = $user->messages();
 		$messages->newestFirst();
 		$messages->take(20);
-		return $messages;
+		return $messages->get();
 	}
 
 
