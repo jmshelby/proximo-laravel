@@ -40,6 +40,7 @@ $message->loc = array(
 
 
 
+
 /*
 	protected $table = 'players';
 
