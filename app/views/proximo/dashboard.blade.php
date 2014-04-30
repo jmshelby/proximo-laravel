@@ -9,14 +9,21 @@
 <h3>HTML5 GeoLocation</h3>
 <p id="geolocation_preview">...calculating...</p>
 <br/>
+<input type="button" onclick="getLocation();" value="Recalculate"></input>
 <br/>
 <br/>
 
 {{ Form::open(array('route'=>'proximo.postMessage', 'method'=>'POST')) }}
 
+<?php /*
 	{{ Form::hidden('latitude', null, array('id'=>'form.post.latitude')) }}<br/>
 	{{ Form::hidden('longitude', null, array('id'=>'form.post.longitude')) }}<br/>
+*/ ?>
 
+	{{ Form::label('latitude', 'latitude') }}<br/>
+	{{ Form::text('latitude', null, array('id'=>'form.post.latitude')) }}<br/>
+	{{ Form::label('longitude', 'longitude') }}<br/>
+	{{ Form::text('longitude', null, array('id'=>'form.post.longitude')) }}<br/>
 
 	{{ Form::label('content', 'Post New Message') }}<br/>
 	{{ Form::textArea('content', Input::old('content') ) }}
@@ -60,8 +67,8 @@
 		var elemLong = document.getElementById('form.post.longitude');
 		var elemLat = document.getElementById('form.post.latitude');
 
-		elemLong.value = position.coords.latitude;
-		elemLat.value = position.coords.longitude;
+		elemLat.value = position.coords.latitude;
+		elemLong.value = position.coords.longitude;
 
 	}
 
