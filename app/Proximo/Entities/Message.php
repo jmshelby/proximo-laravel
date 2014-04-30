@@ -14,6 +14,8 @@ class Message extends \Moloquent {
 
 // TODO - create and attach geo location object
 // Example: { loc : { type : "Point" , coordinates : [ 40, 5 ] } } // has to be in order: long, lat
+$lat = (float) $lat;
+$long = (float) $long;
 $message->loc = array(
 	'type' => 'Point',
 	'coordinates' => array($long, $lat),
