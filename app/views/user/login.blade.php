@@ -1,7 +1,7 @@
 @extends('layout')
 
 @section('content')
-    <h1>Login</h1>
+    <h1>Login / Register</h1>
 
     <!-- check for login error flash var -->
     @if (Session::has('flash_error'))
@@ -23,7 +23,7 @@
     </p>
 
     <!-- submit button -->
-    <p>{{ Form::submit('Login') }}</p>
+    <p>{{ Form::submit('Login / Register') }}</p>
 
     {{ Form::close() }}
 @stop

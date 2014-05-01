@@ -15,7 +15,7 @@
                     <li>{{ HTML::linkRoute('proximo.dashboard', 'Proximity' ) }}</li>
                     <li>{{ HTML::linkRoute('user.logout', 'Logout ('.Auth::user()->username.')') }}</li>
                 @else
-                    <li>{{ HTML::linkRoute('user.login', 'Login') }}</li>
+                    <li>{{ HTML::linkRoute('user.login', 'Login / Register') }}</li>
                 @endif
             </ul>
         </div><!-- end nav -->

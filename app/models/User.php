@@ -18,6 +18,11 @@ class User extends Moloquent implements UserInterface {
 	 */
 	protected $hidden = array('password');
 
+	public static function findByUsername($username)
+	{
+		return static::whereUsername($username)->first();
+	}
+
 	/**
 	 * Get the unique identifier for the user.
 	 *

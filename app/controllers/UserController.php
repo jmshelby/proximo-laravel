@@ -28,6 +28,14 @@ class UserController extends BaseController {
             'password' => Input::get('password')
         );
 
+		// If the username doesn't exist, create a new user
+		if (!User::findByUsername($userParams['username'])) {
+			$userCreateParams = $userParams;
+			$userCreateParams['password'] = Hash::make($userParams['password']);
+			Moloquent::unguard();
+			User::create($userCreateParams);
+		}
+
         if (Auth::attempt($userParams,true)) {
 
             $user = Auth::user();
