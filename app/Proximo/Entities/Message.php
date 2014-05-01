@@ -6,10 +6,11 @@ class Message extends \Moloquent {
 
 	// == Factories ==============================================================
 
-	public static function createFromBroadcast($user, $content, $lat, $long)
+	public static function createFromBroadcast($sessionId, $content, $lat, $long)
 	{
         $message = new static;
-        $message->user()->associate($user);
+
+        $message->session_id = $sessionId;
         $message->content = $content;
 
 // TODO - create and attach geo location object
@@ -26,11 +27,6 @@ $message->loc = array(
 	}
 
 	// == Relationships ==========================================================
-
-    public function user()
-    {
-        return $this->belongsTo('Proximo\Entities\User');
-    }
 
 	// == Scopes =================================================================
 

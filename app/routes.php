@@ -12,8 +12,10 @@
 */
 
 
+/*
 Route::get('/', array('as' => 'home', function () {
     return View::make('home');
  }));
+*/
 
 
