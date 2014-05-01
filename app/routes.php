@@ -16,12 +16,4 @@ Route::get('/', array('as' => 'home', function () {
     return View::make('home');
  }));
 
-Route::controller('user','UserController',array(
-    'getLogin' => 'user.login',
-    'postLogin' => 'user.login.post',
-    'getLogout' => 'user.logout',
-    'getProfile' => 'user.profile',
-));
-
-
 

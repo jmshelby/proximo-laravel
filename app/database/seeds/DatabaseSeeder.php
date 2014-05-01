@@ -9,9 +9,6 @@ class DatabaseSeeder extends Seeder {
 	 */
 	public function run()
 	{
-		Moloquent::unguard();
-		//$this->call('UserTableSeeder');
-		$this->call('UserCollectionSeeder');
 	}
 
 }
