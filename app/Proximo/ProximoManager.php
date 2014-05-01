@@ -2,9 +2,6 @@
 
 use Proximo\Entities\User;
 use Proximo\Entities\Message;
-//use Proximo\Entities\Player\PoolActivity as PlayerPoolActivity;
-//use Proximo\Entities\Player\Transaction as PlayerTransaction;
-//use Proximo\Entities\Player\Transaction\Dividend as PlayerTransactionDividend;
 
 class ProximoManager
 {
@@ -48,6 +45,7 @@ class ProximoManager
 		$messages->take(20);
 		return $messages->get();
 	}
+
 
 
 
