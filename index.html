@@ -71,10 +71,21 @@
             }
 
             function loadGeolocation() {
-                if (navigator.geolocation) {
+                var defaultPosition = {
+                    coords: {
+                        latitude: 39.739341754525086,
+                        longitude: -104.98478651046753
+                    }
+                }
+
+                if (window.location.protocol == 'file:') {
+                    // geolocation blocked for file protocol
+                    initialize(defaultPosition);
+                } else if (navigator.geolocation) {
                     navigator.geolocation.getCurrentPosition(initialize);
                 } else {
-                    alert("Geolocation is not supported by this browser.");
+                    // no geolocation service
+                    initialize(defaultPosition);
                 }
             }
 
@@ -96,8 +107,9 @@
                 float: left;
             }
             #infoPanel {
-                float: left;
-                margin-left: 10px;
+                float: right;
+                width: 300px;
+                padding: 10px;
             }
             #infoPanel div {
                 margin-bottom: 5px;
@@ -105,15 +117,13 @@
         </style>
     </head>
     <body>
-        <div style="float: right; width: 300px;">
-            <div id="infoPanel">
-                <b>Marker status:</b>
-                <div id="markerStatus"><i>Click and drag the marker.</i></div>
-                <b>Current position:</b>
-                <div id="info"></div>
-                <b>Closest matching address:</b>
-                <div id="address"></div>
-            </div>
+        <div id="infoPanel">
+            <b>Marker status:</b>
+            <div id="markerStatus"><i>Click and drag the marker.</i></div>
+            <b>Current position:</b>
+            <div id="info"></div>
+            <b>Closest matching address:</b>
+            <div id="address"></div>
         </div>
         <div style="margin-right: 300px; height: 100%;">
             <div id="mapCanvas"></div>
