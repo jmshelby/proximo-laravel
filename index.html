@@ -70,7 +70,7 @@
                 });
             }
 
-            function loadGeolocation() {
+            function initializeDefault() {
                 var defaultPosition = {
                     coords: {
                         latitude: 39.739341754525086,
@@ -78,14 +78,15 @@
                     }
                 }
 
-                if (window.location.protocol == 'file:') {
-                    // geolocation blocked for file protocol
-                    initialize(defaultPosition);
-                } else if (navigator.geolocation) {
-                    navigator.geolocation.getCurrentPosition(initialize);
+                initialize(defaultPosition);
+            }
+
+            function loadGeolocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(initialize, initializeDefault);
                 } else {
                     // no geolocation service
-                    initialize(defaultPosition);
+                    initializeDefault();
                 }
             }
 
