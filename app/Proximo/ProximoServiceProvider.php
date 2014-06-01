@@ -24,6 +24,9 @@ class ProximoServiceProvider extends \Illuminate\Support\ServiceProvider {
         Route::controller('webservice/message',
 			'Proximo\Controllers\Webservice\MessageController');
 
+        Route::controller('/map-view',
+			'Proximo\Controllers\Frontend\MapViewController');
+
         Route::controller('/',
 			'Proximo\Controllers\Frontend\IndexController');
 
