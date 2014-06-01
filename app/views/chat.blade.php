@@ -35,7 +35,9 @@
 
 		@foreach($messages as $message)
 
-			{{ $message->content }} <div style="font-size: 10px"> - {{ $message->user->username }}</div>
+			{{ $message->content }}
+			<div style="font-size: 10px"> - {{ $message->user->username }}
+			<span style="color: blue;">({{ $message->created_at->diffForHumans() }})</span></div>
 			<hr />
 
 		@endforeach

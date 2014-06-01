@@ -5,6 +5,7 @@
     <title>Proximo</title>
     <?php /* {{ HTML::style('/css/style.css') }} */ ?>
 
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
 
 	<style>
 		@import url(//fonts.googleapis.com/css?family=Lato:700);
