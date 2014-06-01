@@ -35,7 +35,6 @@ class IndexController extends \Proximo\GenePool\Controller\Frontend\Root {
 
 	public function getIndex()
 	{
-\Log::info("Session: ".print_r(\Session::all(), true));
 		$messages = $this->service->getUserMessages();
 		return View::make('chat', array(
 			'player' => $this->_getUser(),

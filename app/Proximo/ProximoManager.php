@@ -60,7 +60,7 @@ class ProximoManager
 		// TODO - Validate Message
 		// TODO - Location
 		$newMessage = Message::createFromBroadcast($user, $message, $lat, $long);
-		return true;
+		return $newMessage;
 	}
 
 
