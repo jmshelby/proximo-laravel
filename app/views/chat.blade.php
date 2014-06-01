@@ -13,7 +13,12 @@
 		Longitude: {{ Form::text('longitude', null, array('id'=>'form.post.longitude')) }}<br/>
 		<input type="button" onclick="getLocation();" value="Recalculate" />
 
-	<p>Now you can say whatever you want</p>
+
+		<br />
+		{{ HTML::link('/map-view', 'Demo Map View') }}
+		<br />
+
+		<p>Now you can say whatever you want</p>
 
  
         {{ Form::text('message', Input::old('message'), array('size'=>'100') ) }}
