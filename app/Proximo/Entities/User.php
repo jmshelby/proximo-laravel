@@ -15,15 +15,15 @@ class User extends \Moloquent {
 		return static::where('auth_user_id',$userId)->first();
 	}
 
-	public static function createFromAuthUser($user)
+	public static function createFromAuthUser($authUser)
 	{
-		if ($player = static::getFromAuthUser($user))
-			return $player;
-        $player = new static;
-        $player->authUser()->associate($user);
-        $player->username = $user->username;
-        $player->save();
-        return $player;
+		if ($user = static::getFromAuthUser($authUser))
+			return $user;
+        $user = new static;
+        $user->authUser()->associate($authUser);
+        $user->username = $authUser->username;
+        $user->save();
+        return $user;
 	}
 
 	// == Relationships ==========================================================

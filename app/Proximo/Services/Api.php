@@ -4,19 +4,20 @@ use Proximo\ProximoManager;
 use Proximo\Entities\User;
 use Illuminate\Auth\AuthManager;
 
-use Session;
-
-class Frontend {
+class Api {
 
     protected $_proximoMan;
     protected $_auth;
 
+/*
     public function __construct(ProximoManager $proximoMan, AuthManager $auth)
     {
         $this->_proximoMan = $proximoMan;
         $this->_auth = $auth;
     }
+*/
 
+/*
     protected function _loggedInOrFail()
     {
         if ($this->loggedInCheck()) return $this;
@@ -44,33 +45,6 @@ class Frontend {
         return $this->_user;
     }
 
-	public function lastPosition($newLat = null, $newLong = null)
-	{
-		if (!empty($newLat) && !empty($newLong)) {
-			Session::put('proximo.last_coords.lat', $newLat);
-			Session::put('proximo.last_coords.long', $newLong);
-			return $this;
-		}
-		$lat = Session::get('proximo.last_coords.lat', null);
-		$long = Session::get('proximo.last_coords.long', null);
-		if (is_null($lat) || is_null($long)) {
-			return false;
-		}
-		return (object) array(
-			'lat' => $lat,
-			'long' => $long,
-		);
-	}
-
-	public function getUserMessages()
-	{
-		$lastPosition = $this->lastPosition();
-		if (!$lastPosition) {
-			return array();
-		}
-		return $this->_proximoMan->getMessagesNear($lastPosition->lat, $lastPosition->long);
-	}
-
 	public function __call($method, $parameters)
 	{
 		// Forward to proximo manager, with player as first param
@@ -81,5 +55,6 @@ class Frontend {
 			$parameters
 		);
 	}
+*/
 
 }

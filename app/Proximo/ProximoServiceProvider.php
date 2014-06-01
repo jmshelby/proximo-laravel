@@ -1,11 +1,13 @@
 <?php namespace Proximo;
 
-use Proximo\Services\Frontend;
 use App;
 use View;
 use Route;
 use Input;
 use Session;
+
+use Proximo\Services\Frontend as POVFrontend;
+use Proximo\Services\Api as POVApi;
 
 class ProximoServiceProvider extends \Illuminate\Support\ServiceProvider {
 
@@ -13,6 +15,7 @@ class ProximoServiceProvider extends \Illuminate\Support\ServiceProvider {
     {
 
 
+/*
 		Route::get('/', array('as' => 'root', function () {
 
 			$man = App::make('proximo.manager');
@@ -77,27 +80,22 @@ class ProximoServiceProvider extends \Illuminate\Support\ServiceProvider {
 			return \Redirect::route('root')->withInput();
 
 		}));
+*/
 
 
-// Old Stuff ....
         // Routes
 
-        Route::controller('proximo','\Proximo\Controllers\Frontend\IndexController',array(
-            'getIndex'              => 'proximo.dashboard',
-            'postMessage'           => 'proximo.postMessage',
-            //'getAddHeart'           => 'proximo.addHeart',
-            //'postChangePoolShare'   => 'proximo.changePoolShare',
-            //'getGiveHeart'          => 'proximo.giveHeart',
-            //'getTransactionHistory' => 'proximo.transactionHistory',
-        ));
 
-        //Route::controller('proximo-cron','\Proximo\Controllers\Frontend\CronController');
+        Route::controller('auth',
+			'Proximo\Controllers\Frontend\AuthController');
 
-/*
-        Route::controller('proximo\player','\Proximo\Controllers\Frontend\PlayerController',array(
-            //'getIndex' => 'user.login',
-        ));
-*/
+
+        Route::controller('/',
+			'Proximo\Controllers\Frontend\IndexController');
+
+        Route::controller('webservice/message',
+			'Proximo\Controllers\Webservice\MessageController');
+
 
     }
 
@@ -109,7 +107,11 @@ class ProximoServiceProvider extends \Illuminate\Support\ServiceProvider {
         });
         $this->app->bindShared('proximo.service.frontend', function($app)
         {
-            return new Frontend($app['proximo.manager'], $app['auth']);
+            return new POVFrontend($app['proximo.manager'], $app['auth']);
+        });
+        $this->app->bindShared('proximo.service.api', function($app)
+        {
+            return new POVApi($app['proximo.manager']);
         });
     }
 

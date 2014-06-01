@@ -6,11 +6,12 @@
 <br/>
 
 
-    {{ Form::open(array('route'=>'post.postMessage', 'method'=>'POST')) }}
-<h5>HTML5 GeoLocation</h5>
-Latitude: {{ Form::text('latitude', null, array('id'=>'form.post.latitude')) }}<br/>
-Longitude: {{ Form::text('longitude', null, array('id'=>'form.post.longitude')) }}<br/>
-<input type="button" onclick="getLocation();" value="Recalculate" />
+    {{ Form::open(array('url'=>'message', 'method'=>'POST')) }}
+
+		<h5>HTML5 GeoLocation</h5>
+		Latitude: {{ Form::text('latitude', null, array('id'=>'form.post.latitude')) }}<br/>
+		Longitude: {{ Form::text('longitude', null, array('id'=>'form.post.longitude')) }}<br/>
+		<input type="button" onclick="getLocation();" value="Recalculate" />
 
 	<p>Now you can say whatever you want</p>
 
@@ -24,9 +25,17 @@ Longitude: {{ Form::text('longitude', null, array('id'=>'form.post.longitude')) 
 
 	@if ($messages)
 
+			<br />
+			<hr />
+			<h2>Messages:</h2>
+			<hr />
+			<br />
+			<br />
+			<hr />
+
 		@foreach($messages as $message)
 
-			{{ $message->content }}
+			{{ $message->content }} <div style="font-size: 10px"> - {{ $message->user->username }}</div>
 			<hr />
 
 		@endforeach
