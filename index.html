@@ -100,17 +100,10 @@
 
             function postMessage(message) {
                 messages[messageIndex++] = {
-                    text: message,
+                    content: message,
                     active: true
                 };
 
-                updateMessageView();
-            }
-
-            function removeMessage(id) {
-                console.log('Triggered: removeMessage(', id, ')');
-                console.log('Reverse this action with: addMessage(', id, ')');
-                messages[id].active = false;
                 updateMessageView();
             }
 
@@ -120,25 +113,25 @@
             }
 
             function updateMessageView() {
+                console.log(messages);
+
                 var domMessages = $('.messages');
                 domMessages.children('li').addClass('hidden');
 
                 var previousElement = null;
                 $.each(messages, function(id, value) {
-                    if(value.active) {
-                        var element = $('#message-'+id);
-                        if (element.size()) {
-                            element.removeClass('hidden');
+                    var element = $('#message-'+id);
+                    if (element.size()) {
+                        element.removeClass('hidden');
+                    } else {
+                        var element = $('<li>').attr('id','message-'+id).data('id',id).html(value.content);
+                        if (previousElement) {
+                            previousElement.after(element);
                         } else {
-                            var newElement = $('<li>').attr('id','message-'+id).data('id',id).html(value.text);
-                            if (previousElement) {
-                                previousElement.after(newElement);
-                            } else {
-                                domMessages.prepend(newElement);
-                            }
+                            domMessages.prepend(element);
                         }
-                        previousElement = element;
                     }
+                    previousElement = element;
                 });
             }
 
@@ -147,9 +140,18 @@
                 var input = $(this).find('input');
                 postMessage(input.val());
                 input.val('');
-            }).on('click', '#chat .messages > li', function(e) {
-                var id = $(this).data('id');
-                removeMessage(id);
+            });
+
+            $.get('http://dubdub.jakegub.com/webservice/messages?latitude=39.531477599999995&longitude=-104.85126199999999&username=pete', function(response) {
+
+                var newMessages = {};
+
+                $.each(response.response, function(key, message) {
+                    newMessages[message.id] = message;
+                });
+
+                messages = newMessages;
+                updateMessageView();
             });
         </script>
         <style type="text/css">
