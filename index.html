@@ -11,6 +11,8 @@
             var geocoder = new google.maps.Geocoder();
 
             function geocodePosition(pos) {
+                getMessages(pos);
+    
                 geocoder.geocode({
                     latLng: pos
                 }, function(responses) {
@@ -98,6 +100,26 @@
             var messages = {};
             var messageIndex = 1;
 
+            function getMessages(position) {
+                $.get('http://dubdub.jakegub.com/webservice/messages?latitude='
+                    +position.lat()
+                    +'&longitude='
+                    +position.lng()
+                    +'&username=pete',
+                function(response) {
+
+                    var newMessages = {};
+
+                    $.each(response.response, function(key, message) {
+                        newMessages[message.id] = message;
+                    });
+
+                    messages = newMessages;
+                    updateMessageView();
+                });
+
+            }
+
             function postMessage(message) {
                 messages[messageIndex++] = {
                     content: message,
@@ -140,18 +162,6 @@
                 var input = $(this).find('input');
                 postMessage(input.val());
                 input.val('');
-            });
-
-            $.get('http://dubdub.jakegub.com/webservice/messages?latitude=39.531477599999995&longitude=-104.85126199999999&username=pete', function(response) {
-
-                var newMessages = {};
-
-                $.each(response.response, function(key, message) {
-                    newMessages[message.id] = message;
-                });
-
-                messages = newMessages;
-                updateMessageView();
             });
         </script>
         <style type="text/css">
