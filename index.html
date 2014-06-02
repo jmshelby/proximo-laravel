@@ -9,6 +9,7 @@
              * Draggable Map Marker code from http://www.smipple.net/snippet/sulhas/Example%20Draggable%20Marker%20Google%20Maps
              */
             var geocoder = new google.maps.Geocoder();
+            var map;
 
             function geocodePosition(pos) {
                 getMessages(pos);
@@ -39,16 +40,29 @@
                 document.getElementById('address').innerHTML = str;
             }
 
+            function addMarker(position, title) {
+                console.log(position);
+                var latLng = new google.maps.LatLng(position.longitude, position.latitude);
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    title: title,
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                    icon: "http://maps.google.com/mapfiles/ms/micons/blue.png"
+                });
+                console.log(marker);
+            }
+
             function initialize(position) {
                 var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
-                var map = new google.maps.Map(document.getElementById('mapCanvas'), {
+                map = new google.maps.Map(document.getElementById('mapCanvas'), {
                     zoom: 8,
                     center: latLng,
                     mapTypeId: google.maps.MapTypeId.ROADMAP
                 });
                 var marker = new google.maps.Marker({
                     position: latLng,
-                    title: 'Point A',
+                    title: 'Your Current Location',
                     map: map,
                     draggable: true
                 });
@@ -146,6 +160,7 @@
                     if (element.size()) {
                         element.removeClass('hidden');
                     } else {
+                        addMarker(value.location, value.content);
                         var element = $('<li>').attr('id','message-'+id).data('id',id).html(value.content);
                         if (previousElement) {
                             previousElement.after(element);
