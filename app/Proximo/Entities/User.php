@@ -5,6 +5,7 @@ class User extends \Moloquent {
 
 	protected $table = 'proximo.user';
 
+	protected $guarded = array();
 
 	// == Factories ==============================================================
 

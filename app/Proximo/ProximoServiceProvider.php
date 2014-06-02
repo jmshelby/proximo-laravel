@@ -21,10 +21,10 @@ class ProximoServiceProvider extends \Illuminate\Support\ServiceProvider {
         Route::controller('ajax/message',
 			'Proximo\Controllers\Frontend\Ajax\MessageController');
 
-        Route::controller('webservice/message',
-			'Proximo\Controllers\Webservice\MessageController');
+        Route::controller('webservice',
+			'Proximo\Controllers\Webservice\IndexController');
 
-        Route::controller('/map-view',
+        Route::controller('map-view',
 			'Proximo\Controllers\Frontend\MapViewController');
 
         Route::controller('/',
