@@ -61,7 +61,14 @@ class IndexController extends \Proximo\GenePool\Controller\Webservice\Root
 	{
 		try {
 			$user = $this->_getUser();
-			$user->fill(Input::except('username'));
+			$input = Input::except('username');
+			foreach($input as $key => $value) {
+				if (in_array($key, array('_id', 'id', 'username', 'created_at', 'updated_at'))) {
+					continue;
+				}
+				$newKey = "custom_{$key}";
+				$user->$newKey = $value;
+			}
 			$user->save();
 		} catch (Exception $e) {
 			return $this->_response_exception($e);
@@ -128,6 +135,10 @@ class IndexController extends \Proximo\GenePool\Controller\Webservice\Root
             'created_at' => (string) $object->created_at,
             'updated_at' => (string) $object->updated_at,
         );
+        foreach($object->toArray() as $key => $value) {
+        	if (strpos($key, 'custom_') === 0)
+				$formatted->$key = $value;
+        }
         return $formatted;
     }
 
