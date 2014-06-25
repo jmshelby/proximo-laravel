@@ -14,17 +14,18 @@ Proximo prototype built on top of laravel
 # APIs
 =========
 
+```
 GET /webservice/user
-  Get user info.
-  Params: username
+    Get user info.
+    Params: username
 GET /webservice/user-post
-  Update user info
-  Params: username, (any other field)
+    Update user info
+    Params: username, (any other field)
 
 ANY /webservice/messages
-  Get messages for yourself, in proximity to passed latitude/longitude
-  Params: username, latitude, longitude
+    Get messages for yourself, in proximity to passed latitude/longitude
+    Params: username, latitude, longitude
 ANY /webservice/post-message
-  Post message for yourself, at latitude/longitude
-  Params: username, latitude, longitude, content
-
+    Post message for yourself, at latitude/longitude
+    Params: username, latitude, longitude, content
+```
