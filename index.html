@@ -117,11 +117,16 @@
             var messageIndex = 1;
 
             function getMessages(position) {
+                var username = $('#username').val();
+                if(!username) {
+                    username = 'test-user';
+                }
+
                 $.get('http://dubdub.jakegub.com/webservice/messages?latitude='
                     +position.lat()
                     +'&longitude='
                     +position.lng()
-                    +'&username=pete',
+                    +'&username='+username,
                 function(response) {
 
                     var newMessages = {};
@@ -138,11 +143,16 @@
 
             function postMessage(message) {
                 var position = lastKnownPosition;
+                var username = $('#username').val();
+                if(!username || !message) {
+                    return; // cannot post messages without name and a message
+                }
+
                 $.get('http://dubdub.jakegub.com/webservice/post-message?latitude='
                     +position.lat()
                     +'&longitude='
                     +position.lng()
-                    +'&username=pete'
+                    +'&username='+username
                     +'&content='+message,
                 function(response) {
 
@@ -184,7 +194,7 @@
 
             $(document).on('submit', '#chat form', function(e) {
                 e.preventDefault();
-                var input = $(this).find('input');
+                var input = $(this).find('#content');
                 postMessage(input.val());
                 input.val('');
             });
@@ -223,7 +233,7 @@
                 height: 100%;
                 margin: 0;
                 padding: 10px;
-                padding-bottom: 50px;
+                padding-bottom: 80px;
             }
             #chat .messages > li {
                 display: block;
@@ -264,7 +274,9 @@
         <div id="chat">
             <ul class="messages"></ul>
             <form>
-                <input type="text"/>
+                <input type="text" name="username" id="username" placeholder="Your Name"/>
+                <input type="text" name="content" id="content"/>
+                <input type="submit" style="display:none"/>
             </form>
         </div>
         <div id="mapCanvas"></div>
