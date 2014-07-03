@@ -10,8 +10,10 @@
              */
             var geocoder = new google.maps.Geocoder();
             var map;
+            var lastKnownPosition;
 
             function geocodePosition(pos) {
+                lastKnownPosition = pos;
                 getMessages(pos);
     
                 geocoder.geocode({
@@ -135,12 +137,20 @@
             }
 
             function postMessage(message) {
-                messages[messageIndex++] = {
-                    content: message,
-                    active: true
-                };
+                var position = lastKnownPosition;
+                $.get('http://dubdub.jakegub.com/webservice/post-message?latitude='
+                    +position.lat()
+                    +'&longitude='
+                    +position.lng()
+                    +'&username=pete'
+                    +'&content='+message,
+                function(response) {
 
-                updateMessageView();
+                    var newMessage = response.response;
+                    messages[newMessage.id] = newMessage;
+
+                    updateMessageView();
+                });
             }
 
             function addMessage(id) {
