@@ -12,6 +12,7 @@
             var map;
             var lastKnownPosition;
             var markers = [];
+            var heartbeat;
 
             function geocodePosition(pos) {
                 lastKnownPosition = pos;
@@ -101,6 +102,8 @@
                     updateMarkerStatus('Drag ended');
                     geocodePosition(marker.getPosition());
                 });
+
+                heartbeat = setInterval(getMessages, 5000);
             }
 
             function initializeDefault() {
@@ -131,6 +134,10 @@
             var messageIndex = 1;
 
             function getMessages(position) {
+                if(!position) {
+                    position = lastKnownPosition;
+                }
+
                 var username = $('#username').val();
                 if(!username) {
                     username = 'test-user';
@@ -156,6 +163,7 @@
             }
 
             function postMessage(message) {
+                clearInterval(heartbeat);
                 var position = lastKnownPosition;
                 var username = $('#username').val();
                 if(!username || !message) {
@@ -179,6 +187,8 @@
                     messages[newMessage.id] = newMessage;
 
                     updateMessageView();
+
+                    heartbeat = setInterval(getMessages, 5000);
                 });
             }
 
