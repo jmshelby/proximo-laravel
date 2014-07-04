@@ -11,6 +11,7 @@
             var geocoder = new google.maps.Geocoder();
             var map;
             var lastKnownPosition;
+            var markers = [];
 
             function geocodePosition(pos) {
                 lastKnownPosition = pos;
@@ -42,7 +43,7 @@
                 document.getElementById('address').innerHTML = str;
             }
 
-            function addMarker(position, title) {
+            function addMarker(id, position, title) {
                 console.log(position);
                 var latLng = new google.maps.LatLng(position.longitude, position.latitude);
                 var marker = new google.maps.Marker({
@@ -52,7 +53,20 @@
                     animation: google.maps.Animation.DROP,
                     icon: "http://maps.google.com/mapfiles/ms/micons/blue.png"
                 });
+
+                markers[id] = marker;
+
                 console.log(marker);
+            }
+
+            function hideMarkers() {
+                for (var i in markers) {
+                    markers[i].setMap(null);
+                }
+            }
+
+            function showMarker(id) {
+                markers[id].setMap(map);
             }
 
             function initialize(position) {
@@ -131,7 +145,7 @@
 
                     var newMessages = {};
 
-                    $.each(response.response, function(key, message) {
+                    $.each(response.response.reverse(), function(key, message) {
                         newMessages[message.id] = message;
                     });
 
@@ -146,6 +160,11 @@
                 var username = $('#username').val();
                 if(!username || !message) {
                     return; // cannot post messages without name and a message
+                } else {
+                    // Save username for next time
+                    if(typeof(Storage) !== "undefined") {
+                        localStorage.setItem("username", username);
+                    }
                 }
 
                 $.get('http://dubdub.jakegub.com/webservice/post-message?latitude='
@@ -174,14 +193,23 @@
                 var domMessages = $('.messages');
                 domMessages.children('li').addClass('hidden');
 
+                hideMarkers();
+
                 var previousElement = null;
                 $.each(messages, function(id, value) {
                     var element = $('#message-'+id);
                     if (element.size()) {
                         element.removeClass('hidden');
+                        showMarker(id);
                     } else {
-                        addMarker(value.location, value.content);
-                        var element = $('<li>').attr('id','message-'+id).data('id',id).html(value.content);
+                        addMarker(id, value.location, value.user.username + ': ' + value.content);
+                        var element = $('#message-template').clone().attr('id','message-'+id).data('id',id);
+                        element.find('.content').html(value.content);
+                        element.find('.username').html(value.user.username);
+                        if(value.user.username == $('#username').val()) {
+                            element.addClass('myself');
+                        }
+                        element.removeClass('hidden');
                         if (previousElement) {
                             previousElement.after(element);
                         } else {
@@ -190,6 +218,8 @@
                     }
                     previousElement = element;
                 });
+
+                domMessages.scrollTop(domMessages.prop("scrollHeight"));
             }
 
             $(document).on('submit', '#chat form', function(e) {
@@ -197,6 +227,12 @@
                 var input = $(this).find('#content');
                 postMessage(input.val());
                 input.val('');
+            });
+
+            $(function(){
+                if(typeof(Storage) !== "undefined") {
+                    $('#username').val(localStorage.getItem("username"));
+                }
             });
         </script>
         <style type="text/css">
@@ -236,6 +272,13 @@
                 padding-bottom: 80px;
             }
             #chat .messages > li {
+                padding-top: 7px;
+            }
+            #chat .messages > li .username {
+                color: #999;
+                font-size: 11px;
+            }
+            #chat .messages > li .content {
                 display: block;
                 background: #ddeeb0;
                 border-radius: 7px;
@@ -245,6 +288,9 @@
                 max-height: 150px;
                 transition: all 0.5s;
                 cursor: pointer;
+            }
+            #chat .messages > li.myself .content {
+                background: #eee;
             }
             #chat .messages > li.hidden {
                 opacity: 0;
@@ -272,7 +318,12 @@
     </head>
     <body>
         <div id="chat">
-            <ul class="messages"></ul>
+            <ul class="messages">
+                <li id="message-template">
+                    <div class="username">Username</div>
+                    <div class="content">Content</div>
+                </li>
+            </ul>
             <form>
                 <input type="text" name="username" id="username" placeholder="Your Name"/>
                 <input type="text" name="content" id="content"/>
