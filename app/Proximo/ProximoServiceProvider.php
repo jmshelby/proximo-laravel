@@ -13,23 +13,6 @@ class ProximoServiceProvider extends \Illuminate\Support\ServiceProvider {
 
     public function boot()
     {
-
-        // Routes
-        Route::controller('auth',
-			'Proximo\Controllers\Frontend\AuthController');
-
-        Route::controller('ajax/message',
-			'Proximo\Controllers\Frontend\Ajax\MessageController');
-
-        Route::controller('webservice',
-			'Proximo\Controllers\Webservice\IndexController');
-
-        Route::controller('map-view',
-			'Proximo\Controllers\Frontend\MapViewController');
-
-        Route::controller('/',
-			'Proximo\Controllers\Frontend\IndexController');
-
     }
 
     public function register()
