@@ -1,7 +1,8 @@
 <?php namespace Proximo\Entities;
 
 //class User extends \Proximo\GenePool\Models\Mongo\Root {
-class User extends \Moloquent {
+class User extends \Moloquent
+{
 
 	protected $table = 'proximo.user';
 
@@ -20,19 +21,19 @@ class User extends \Moloquent {
 	{
 		if ($user = static::getFromAuthUser($authUser))
 			return $user;
-        $user = new static;
-        $user->authUser()->associate($authUser);
-        $user->username = $authUser->username;
-        $user->save();
-        return $user;
+		$user = new static;
+		$user->authUser()->associate($authUser);
+		$user->username = $authUser->username;
+		$user->save();
+		return $user;
 	}
 
 	// == Relationships ==========================================================
 
-    public function authUser()
-    {
-        return $this->belongsTo('User', 'auth_user_id');
-    }
+	public function authUser()
+	{
+		return $this->belongsTo('User', 'auth_user_id');
+	}
 
 	public function messages()
 	{

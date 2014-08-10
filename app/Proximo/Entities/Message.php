@@ -9,7 +9,8 @@
  */
 
 
-class Message extends \Moloquent {
+class Message extends \Moloquent
+{
 
 	protected $table = 'proximo.message';
 
@@ -17,10 +18,10 @@ class Message extends \Moloquent {
 
 	public static function createFromBroadcast($user, $content, $lat, $long)
 	{
-        $message = new static;
+		$message = new static;
 
-        $message->user()->associate($user);
-        $message->content = $content;
+		$message->user()->associate($user);
+		$message->content = $content;
 
 // TODO - create and attach geo location object
 // Example: { loc : { type : "Point" , coordinates : [ 40, 5 ] } } // has to be in order: long, lat
@@ -31,8 +32,8 @@ $message->loc = array(
 	'coordinates' => array($long, $lat),
 );
 
-        $message->save();
-        return $message;
+		$message->save();
+		return $message;
 	}
 
 	// == Relationships ==========================================================

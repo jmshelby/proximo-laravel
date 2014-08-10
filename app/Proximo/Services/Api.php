@@ -8,14 +8,15 @@ use Illuminate\Auth\AuthManager;
 use Input;
 use Exception;
 
-class Api {
+class Api
+{
 
-    protected $_proximoMan;
+	protected $_proximoMan;
 
-    public function __construct(ProximoManager $proximoMan)
-    {
-        $this->_proximoMan = $proximoMan;
-    }
+	public function __construct(ProximoManager $proximoMan)
+	{
+		$this->_proximoMan = $proximoMan;
+	}
 
 // == temp - prototype easifiers =================
 
@@ -31,26 +32,26 @@ class Api {
 
 	protected function _createAuthUser($username)
 	{
-        $hash = \Hash::make('password');
+		$hash = \Hash::make('password');
 		$user = new AuthUser;
 		$user->username = $username;
-        $user->password = $hash;
-        $user->save();
+		$user->password = $hash;
+		$user->save();
 		return $user;
 	}
 
 	protected $_authUser;
-    public function getAuthUser()
-    {
-        if (is_null($this->_authUser)) {
+	public function getAuthUser()
+	{
+		if (is_null($this->_authUser)) {
 			$user = AuthUser::whereUsername($this->getParamUserName())->first();
 			if (!$user) {
 				$user = $this->_createAuthUser($this->getParamUserName());
 			}
-        	$this->_authUser = $user;
+			$this->_authUser = $user;
 		}
-        return $this->_authUser;
-    }
+		return $this->_authUser;
+	}
 
 // ===============================================
 
@@ -75,13 +76,13 @@ class Api {
 	}
 
 	protected $_user;
-    public function getUser()
-    {
-        if (is_null($this->_user)) {
-            $this->_user = User::createFromAuthUser($this->getAuthUser());
-        }
-        return $this->_user;
-    }
+	public function getUser()
+	{
+		if (is_null($this->_user)) {
+			$this->_user = User::createFromAuthUser($this->getAuthUser());
+		}
+		return $this->_user;
+	}
 
 	public function getUserMessages()
 	{
@@ -103,23 +104,23 @@ class Api {
 
 
 /*
-    protected function _loggedInOrFail()
-    {
-        if ($this->loggedInCheck()) return $this;
-        // TODO -- Change this to custom exception
-        throw new Exception("Session must be logged in");
-    }
+	protected function _loggedInOrFail()
+	{
+		if ($this->loggedInCheck()) return $this;
+		// TODO -- Change this to custom exception
+		throw new Exception("Session must be logged in");
+	}
 
-    public function loggedInCheck()
-    {
-        return $this->_auth->check();
-    }
+	public function loggedInCheck()
+	{
+		return $this->_auth->check();
+	}
 
-    public function getAuthUser()
-    {
-        $this->_loggedInOrFail();
-        return $this->_auth->user();
-    }
+	public function getAuthUser()
+	{
+		$this->_loggedInOrFail();
+		return $this->_auth->user();
+	}
 
 
 */

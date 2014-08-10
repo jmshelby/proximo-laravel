@@ -9,35 +9,36 @@ use Exception;
 
 use Carbon\Carbon;
 
-class AuthController extends \Proximo\GenePool\Controller\Frontend\Root {
+class AuthController extends \Proximo\GenePool\Controller\Frontend\Root
+{
 
 	const GLOBAL_PASSWORD = 'password';
 
 
-    public function __construct()
-    {
+	public function __construct()
+	{
 \Log::info("inside...");
 
-        $this->beforeFilter('@filterEnsureAuthed', array('only' => array(
-            'getLogout',
-            'getProfile',
-        )));
-        $this->beforeFilter('@filterEnsureGuest', array('only' => array(
-            'getLogin',
-            'postLogin',
-        )));
-    }
+		$this->beforeFilter('@filterEnsureAuthed', array('only' => array(
+			'getLogout',
+			'getProfile',
+		)));
+		$this->beforeFilter('@filterEnsureGuest', array('only' => array(
+			'getLogin',
+			'postLogin',
+		)));
+	}
 
 	public function filterEnsureAuthed($route, $request)
 	{
-        if (Auth::guest()) {
+		if (Auth::guest()) {
 			return Redirect::guest('auth/login');
 		}
 	}
 
 	public function filterEnsureGuest($route, $request)
 	{
-        if (Auth::check()) {
+		if (Auth::check()) {
 			return Redirect::to('/');
 		}
 	}
@@ -66,45 +67,45 @@ class AuthController extends \Proximo\GenePool\Controller\Frontend\Root {
 	public function postLogin()
 	{
 
-       $userParams = array(
-            'username' => Input::get('username'),
-            'password' => Input::get('password')
-        );
+	   $userParams = array(
+			'username' => Input::get('username'),
+			'password' => Input::get('password')
+		);
 
 // Temporary Easy Auth
 $this->_ensureUsernameExists($userParams['username']);
 $userParams['password'] = self::GLOBAL_PASSWORD;
 
-        if (Auth::attempt($userParams,true)) {
+		if (Auth::attempt($userParams,true)) {
 
-            $user = Auth::user();
-            $user->increment('login_count');
+			$user = Auth::user();
+			$user->increment('login_count');
 
-            $login_events = $user->login_events;
-            if (!is_array($login_events))
-                $login_events = array();
+			$login_events = $user->login_events;
+			if (!is_array($login_events))
+				$login_events = array();
 
-            $login_events[] = array(
-                'datetime' => Carbon::now(),
-                'location' => 'frontend',
-            );
-            $user->login_events = $login_events;
-            $user->save();
+			$login_events[] = array(
+				'datetime' => Carbon::now(),
+				'location' => 'frontend',
+			);
+			$user->login_events = $login_events;
+			$user->save();
 
-            return Redirect::intended('/')
-                ->with('flash_notice', 'You are successfully logged in.');
-        }
+			return Redirect::intended('/')
+				->with('flash_notice', 'You are successfully logged in.');
+		}
 
-        // authentication failure! lets go back to the login page
-        return Redirect::to('auth/login')
-            ->with('flash_error', 'Your username/password combination was incorrect.')
-            ->withInput();
+		// authentication failure! lets go back to the login page
+		return Redirect::to('auth/login')
+			->with('flash_error', 'Your username/password combination was incorrect.')
+			->withInput();
 	}
 
 	public function getLogout()
 	{
-        Auth::logout();
-        return Redirect::to('/')->with('flash_notice', 'You are successfully logged out.');
+		Auth::logout();
+		return Redirect::to('/')->with('flash_notice', 'You are successfully logged out.');
 	}
 
 	public function getProfile()

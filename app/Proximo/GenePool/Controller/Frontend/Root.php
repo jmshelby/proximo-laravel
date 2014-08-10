@@ -3,7 +3,8 @@
 use Illuminate\Routing\Controller as LaravelController;
 use Route;
 
-abstract class Root extends LaravelController {
+abstract class Root extends LaravelController
+{
 
 
 /*
