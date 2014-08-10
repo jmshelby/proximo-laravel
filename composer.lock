@@ -4,7 +4,7 @@
         "Read more about it at http://getcomposer.org/doc/01-basic-usage.md#composer-lock-the-lock-file",
         "This file is @generated automatically"
     ],
-    "hash": "9bd1800d526f26c8ac7029a1eae8c1cc",
+    "hash": "e7a74288d3c8557728c54ad23c5cfb45",
     "packages": [
         {
             "name": "classpreloader/classpreloader",
@@ -186,16 +186,16 @@
         },
         {
             "name": "jenssegers/mongodb",
-            "version": "v1.4.2",
+            "version": "v2.0.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/jenssegers/laravel-mongodb.git",
-                "reference": "27b52063422e85ff083c5f54ed8c741b1951b311"
+                "reference": "0a256970017e9923909f75a2595a2a3897081a8a"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/jenssegers/laravel-mongodb/zipball/27b52063422e85ff083c5f54ed8c741b1951b311",
-                "reference": "27b52063422e85ff083c5f54ed8c741b1951b311",
+                "url": "https://api.github.com/repos/jenssegers/laravel-mongodb/zipball/0a256970017e9923909f75a2595a2a3897081a8a",
+                "reference": "0a256970017e9923909f75a2595a2a3897081a8a",
                 "shasum": ""
             },
             "require": {
@@ -240,7 +240,7 @@
                 "mongo",
                 "mongodb"
             ],
-            "time": "2014-07-26 22:43:23"
+            "time": "2014-08-10 08:52:59"
         },
         {
             "name": "jeremeamia/SuperClosure",
