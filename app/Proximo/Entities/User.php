@@ -1,7 +1,8 @@
 <?php namespace Proximo\Entities;
 
-//class User extends \Proximo\GenePool\Models\Mongo\Root {
-class User extends \Moloquent
+use Jenssegers\Mongodb\Model as Eloquent;
+
+class User extends Eloquent
 {
 
 	protected $table = 'proximo.user';

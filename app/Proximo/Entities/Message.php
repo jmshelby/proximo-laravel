@@ -1,10 +1,13 @@
 <?php namespace Proximo\Entities;
+
+use Jenssegers\Mongodb\Model as Eloquent;
+
 /*
  * Need to Make sure the following gets ran, until we can do if from the app
  *   db.proximo.message.ensureIndex( { loc : "2dsphere" } )
  *
  */
-class Message extends \Moloquent
+class Message extends Eloquent
 {
 
 	protected $table = 'proximo.message';
