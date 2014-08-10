@@ -17,7 +17,6 @@ class AuthController extends \Proximo\GenePool\Controller\Frontend\Root
 
 	public function __construct()
 	{
-\Log::info("inside...");
 
 		$this->beforeFilter('@filterEnsureAuthed', array('only' => array(
 			'getLogout',
