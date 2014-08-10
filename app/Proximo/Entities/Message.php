@@ -1,14 +1,9 @@
 <?php namespace Proximo\Entities;
-
 /*
  * Need to Make sure the following gets ran, until we can do if from the app
  *   db.proximo.message.ensureIndex( { loc : "2dsphere" } )
  *
- *
- *
  */
-
-
 class Message extends \Moloquent
 {
 
@@ -23,14 +18,8 @@ class Message extends \Moloquent
 		$message->user()->associate($user);
 		$message->content = $content;
 
-// TODO - create and attach geo location object
-// Example: { loc : { type : "Point" , coordinates : [ 40, 5 ] } } // has to be in order: long, lat
-$lat = (float) $lat;
-$long = (float) $long;
-$message->loc = array(
-	'type' => 'Point',
-	'coordinates' => array($long, $lat),
-);
+		$message->lat = $lat;
+		$message->long = $long;
 
 		$message->save();
 		return $message;
@@ -90,11 +79,31 @@ $message->loc = array(
 		$this->setLocation($lat, $lng);
 	}
 
+	public function setLatitudeAttribute($value)
+	{
+		$this->setLatitude($value);
+	}
+
+	public function setLatAttribute($value)
+	{
+		$this->setLatitude($value);
+	}
+
+	public function setLongitudeAttribute($value)
+	{
+		$this->setLongitude($value);
+	}
+
+	public function setLongAttribute($value)
+	{
+		$this->setLongitude($value);
+	}
+
 	// ===========================================================================
 
 	public function getLongitude()
 	{
-		$curLoc = $this->attributes['loc'];
+		$curLoc = @$this->attributes['loc'];
 		if (isset($curLoc['coordinates'][0]))
 			return $curLoc['coordinates'][0];
 		else
@@ -103,7 +112,7 @@ $message->loc = array(
 
 	public function getLatitude()
 	{
-		$curLoc = $this->attributes['loc'];
+		$curLoc = @$this->attributes['loc'];
 		if (isset($curLoc['coordinates'][1]))
 			return $curLoc['coordinates'][1];
 		else
@@ -124,11 +133,28 @@ $message->loc = array(
 		);
 	}
 
+	public function setLatitude($value)
+	{
+		$this->setLocation($value, null);
+	}
+
+	public function setLongitude($value)
+	{
+		$this->setLocation(null, $value);
+	}
+
 	public function setLocation($newLat = null, $newLng = null)
 	{
 		$lat = !is_null($newLat) ? $newLat : $this->getLatitude();
 		$lng = !is_null($newLng) ? $newLng : $this->getLongitude();
 
+		// Make sure they are floats
+		$lat = (float) $lat;
+		$lng = (float) $lng;
+
+		// MongoDB Geo Location Object Format
+		// Example: { loc : { type : "Point" , coordinates : [ 40, 5 ] } }
+		// Has to be in order: long, lat
 		$this->attributes['loc'] = array(
 			'type'			=> 'Point',
 			'coordinates'	=> array($lng, $lat),
