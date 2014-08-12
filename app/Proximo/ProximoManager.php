@@ -3,6 +3,8 @@
 use Proximo\Entities\Message;
 use Proximo\Entities\User;
 
+use Illuminate\Support\Collection;
+
 class ProximoManager
 {
 
@@ -30,6 +32,7 @@ class ProximoManager
 	{
 		return User::find($id);
 	}
+
 	public function getMessagesNear($lat, $long)
 	{
 		$lat = (float) $lat;
@@ -63,6 +66,59 @@ class ProximoManager
 		return $newMessage;
 	}
 
+
+
+	public function getMessagesNearWithDist($lat, $long, $mult = 1)
+	{
+		echo "<pre>","\n";
+		echo "","\n";
+		echo "Going to show messages near: lat: $lat, long: $long","\n";
+		echo "","\n";
+		echo "","\n";
+		echo "","\n";
+		echo "","\n";
+
+		$lat = (float) $lat;
+		$long = (float) $long;
+
+		$point = array(
+			'type' => "Point",
+			'coordinates' => array($long, $lat),
+		);
+		
+		$db = \DB::getMongoDB();
+
+		$r = $db->command(array(
+			'geoNear' => 'proximo.message',
+			'near' => $point,
+			'spherical' => true,
+			//'distanceMultiplier' => (3959 * pi()) / 180,
+			//'distanceMultiplier' => 3959,
+			//'distanceMultiplier' => $mult,
+			//'distanceMultiplier' => 2.457495 / 3959, // This is as close as I could get, still not sure the right way
+		));
+
+
+		if (!isset($r['results'])) {
+			return new Collection;
+		}
+
+		$rCollection = new Collection($r['results']);
+		$distances = $rCollection->lists('dis');
+		$objects = $rCollection->lists('obj');
+
+		$collection = (new Message)->hydrate($objects);
+		foreach($collection as $index => $message) {
+			$message->command_metadata = (object) array(
+				'distance' => $distances[$index],
+			);
+		}
+
+		echo "Messages:","\n";
+		print_r($objects);
+		print_r($distances);
+		print_r($collection->toArray());
+	}
 
 
 
