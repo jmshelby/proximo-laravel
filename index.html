@@ -45,8 +45,8 @@
             }
 
             function addMarker(id, position, title) {
-                console.log(position);
-                var latLng = new google.maps.LatLng(position.longitude, position.latitude);
+                console.log('position', position);
+                var latLng = new google.maps.LatLng(position.latitude, position.longitude);
                 var marker = new google.maps.Marker({
                     position: latLng,
                     title: title,
@@ -57,7 +57,7 @@
 
                 markers[id] = marker;
 
-                console.log(marker);
+                console.log('marker', marker);
             }
 
             function hideMarkers() {
@@ -198,7 +198,7 @@
             }
 
             function updateMessageView() {
-                console.log(messages);
+                console.log('messages', messages);
 
                 var domMessages = $('.messages');
                 domMessages.children('li').addClass('hidden');
