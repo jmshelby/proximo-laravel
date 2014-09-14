@@ -220,6 +220,10 @@
                         var element = $('#message-template').clone().attr('id','message-'+id).data('id',id);
                         element.find('.content').html(value.content);
                         element.find('.username').html(value.user.username);
+                        element.find('.extended-data').html(JSON.stringify(value, null, 4));
+                        element.click(function() {
+                            $(this).find('.extended-data').slideToggle();
+                        })
                         if(value.user.username == $('#username').val()) {
                             element.addClass('myself');
                         }
@@ -306,6 +310,11 @@
             #chat .messages > li.myself .content {
                 background: #eee;
             }
+            #chat .messages > li .extended-data {
+                display: none;
+                font-size: 9px;
+                padding: 0 15px;
+            }
             #chat .messages > li.hidden {
                 opacity: 0;
                 max-height: 0;
@@ -336,6 +345,7 @@
                 <li id="message-template">
                     <div class="username">Username</div>
                     <div class="content">Content</div>
+                    <pre class="extended-data">Extended Data</pre>
                 </li>
             </ul>
             <form>
