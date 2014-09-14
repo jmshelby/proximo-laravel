@@ -133,6 +133,10 @@
             var messages = {};
             var messageIndex = 1;
 
+            function getApiUrl() {
+                return $('#apihost').val();
+            }
+
             function getMessages(position) {
                 if(!position) {
                     position = lastKnownPosition;
@@ -143,7 +147,7 @@
                     username = 'test-user';
                 }
 
-                $.get('http://dubdub.jakegub.com/webservice/messages?latitude='
+                $.get(getApiUrl() + '/webservice/messages?latitude='
                     +position.lat()
                     +'&longitude='
                     +position.lng()
@@ -175,7 +179,7 @@
                     }
                 }
 
-                $.get('http://dubdub.jakegub.com/webservice/post-message?latitude='
+                $.get(getApiUrl() + '/webservice/post-message?latitude='
                     +position.lat()
                     +'&longitude='
                     +position.lng()
@@ -279,7 +283,7 @@
                 height: 100%;
                 margin: 0;
                 padding: 10px;
-                padding-bottom: 80px;
+                padding-bottom: 100px;
             }
             #chat .messages > li {
                 padding-top: 7px;
@@ -337,6 +341,7 @@
             <form>
                 <input type="text" name="username" id="username" placeholder="Your Name"/>
                 <input type="text" name="content" id="content" placeholder="Type a Message"/>
+                <input type="text" name="apihost" id="apihost" placeholder="Api Hostname" value="http://dubdub.jakegub.com"/>
                 <input type="submit" style="position:absolute;left:9999px;"/>
             </form>
         </div>
