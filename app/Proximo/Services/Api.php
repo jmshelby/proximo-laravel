@@ -84,6 +84,13 @@ class Api
 		return $this->_user;
 	}
 
+	public function getGuestMessages()
+	{
+		$lat = $this->getParamLatitude();
+		$long = $this->getParamLongitude();
+		return $this->_proximoMan->getNearestMessages($lat, $long);
+	}
+
 	public function getUserMessages()
 	{
 		$lat = $this->getParamLatitude();

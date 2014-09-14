@@ -33,6 +33,45 @@ class ProximoManager
 		return User::find($id);
 	}
 
+	public function getNearestMessages($lat, $long, $limit = null)
+	{
+		$lat = (float) $lat;
+		$long = (float) $long;
+		$point = array(
+			'type' => "Point",
+			'coordinates' => array($long, $lat),
+		);
+		
+		$q = Message::whereRaw(
+			array(
+				'loc' => array(
+					'$nearSphere' => array('$geometry' => $point),
+				),
+			)
+		);
+
+		if (is_null($limit))
+			$limit = 5;
+		$q->limit($limit);
+ 
+		// Get the in-memory collection
+		$messages = $q->get();
+
+		// Sorting the in-mem collection
+		$messages->sortByDesc(function($item)
+        {
+            $value = data_get($item, 'created_at');                                           
+			$time =  strtotime($value);
+			return $time;
+        });
+
+		// the collection keeps the keys when sorting in memory, so we'll just reset them for now (cause problems later on)
+		$messages->values();
+
+		return $messages;
+	}
+
+	// This is the old function that returns messages with x radius of location
 	public function getMessagesNear($lat, $long)
 	{
 		$lat = (float) $lat;
