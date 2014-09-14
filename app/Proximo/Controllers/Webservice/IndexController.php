@@ -120,7 +120,7 @@ class IndexController extends \Proximo\GenePool\Controller\Webservice\Root
 
 	public function _formatMessage($object)
 	{
-		if ($object instanceof Collection) $object = $object->all();
+		if ($object instanceof Collection) $object = array_values($object->all());
 		if (is_array($object)) return array_map(__METHOD__, $object);
 		$formatted = (object) array(
 			'id' => $object->id,

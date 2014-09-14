@@ -58,15 +58,7 @@ class ProximoManager
 		$messages = $q->get();
 
 		// Sorting the in-mem collection
-		$messages->sortByDesc(function($item)
-        {
-            $value = data_get($item, 'created_at');                                           
-			$time =  strtotime($value);
-			return $time;
-        });
-
-		// the collection keeps the keys when sorting in memory, so we'll just reset them for now (cause problems later on)
-		$messages->values();
+		$messages->sortByDesc(function($item) { return @$item->created_at->timestamp; });
 
 		return $messages;
 	}
