@@ -116,8 +116,8 @@ class IndexController extends \Proximo\GenePool\Controller\Webservice\Root
 			'id' => $object->id,
 			'content' => $object->content,
 			'location' => array(
-				'latitude' => @$object->loc[coordinates][0],
-				'longitude' => @$object->loc[coordinates][1],
+				'latitude' => $object->loc->lat,
+				'longitude' => $object->loc->long,
 			),
 			'date' => (string) $object->created_at,
 			'user' => $this->_formatUser($object->user),
