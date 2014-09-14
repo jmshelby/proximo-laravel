@@ -51,7 +51,7 @@ class ProximoManager
 		);
 
 		if (is_null($limit))
-			$limit = 5;
+			$limit = 10;
 		$q->limit($limit);
  
 		// Get the in-memory collection

@@ -7,6 +7,11 @@
 		"laravel/framework": "4.2.*",
 		"jenssegers/mongodb": "2.*"
 	},
+	"require-dev": {
+		"badcow/lorem-ipsum": "dev-master",
+		"guzzlehttp/guzzle": "~4.0",
+		"phpunit/php-timer": "~1.0"
+	},
 	"autoload": {
 		"classmap": [
 			"app/commands",

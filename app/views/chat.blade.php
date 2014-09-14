@@ -43,6 +43,7 @@
 			{{ $message->content }}
 			<div style="font-size: 10px"> - {{ $message->user->username }}
 			<span style="color: blue;">({{ $message->created_at->diffForHumans() }})</span></div>
+			<div> {{ var_dump($message->loc) }} </div>
 			<hr />
 
 		@endforeach
