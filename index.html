@@ -219,6 +219,7 @@
                         addMarker(id, value.location, value.user.username + ': ' + value.content);
                         var element = $('#message-template').clone().attr('id','message-'+id).data('id',id);
                         element.find('.content').html(value.content);
+                        element.find('.date').html(value.date);
                         element.find('.username').html(value.user.username);
                         element.find('.extended-data').html(JSON.stringify(value, null, 4));
                         element.click(function() {
@@ -295,9 +296,17 @@
             #chat .messages > li .username {
                 color: #999;
                 font-size: 11px;
+                padding-bottom: 5px;
+                float: left;
+            }
+            #chat .messages > li .date {
+                color: #999;
+                font-size: 11px;
+                float: right;
             }
             #chat .messages > li .content {
                 display: block;
+                clear: both;
                 background: #ddeeb0;
                 border-radius: 7px;
                 margin: 3px;
@@ -341,6 +350,7 @@
             <ul class="messages">
                 <li id="message-template">
                     <div class="username">Username</div>
+                    <div class="date">Date</div>
                     <div class="content">Content</div>
                     <pre class="extended-data">Extended Data</pre>
                 </li>
