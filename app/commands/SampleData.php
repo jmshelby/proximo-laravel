@@ -52,8 +52,8 @@ class SampleData extends Command {
 		$randomMessage = $generator->getSentences(1);
 		$randomMessage = reset($randomMessage);
 
-		$lat = $this->getRandomLocation(40);
-		$long = $this->getRandomLocation(126);
+		$lat = $this->getRandomLocation($this->option('lat'));
+		$long = $this->getRandomLocation($this->option('long'));
 
 		$username = 'chatty_cathy';
 
@@ -92,9 +92,11 @@ class SampleData extends Command {
 	public function fire()
 	{
 		$hits = $this->option('hits');
+		$wait = $this->option('wait');
 
 		for($i=0; $i<$hits; $i++) {
 			$this->postRandomMessage();
+			usleep($wait);
 		}
 
 		$this->info("Done posting messages");
@@ -124,6 +126,10 @@ class SampleData extends Command {
 			//array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
 			array('hits', null, InputOption::VALUE_OPTIONAL, 'Amount of messages to post', '5'),
 			array('host', null, InputOption::VALUE_OPTIONAL, 'Hostname of webservice to use', 'dubdub.jakegub.com'),
+			array('wait', null, InputOption::VALUE_OPTIONAL, 'Amount of time to wait (in micro seconds) between requests', '0'),
+
+			array('lat', null, InputOption::VALUE_OPTIONAL, 'General Location, Latitude ', '40'), // North Korea
+			array('long', null, InputOption::VALUE_OPTIONAL, 'General Location, Longitude ', '126'), // North Korea
 		);
 	}
 
