@@ -55,6 +55,15 @@
                     icon: "http://maps.google.com/mapfiles/ms/micons/blue.png"
                 });
 
+                var infowindow = new google.maps.InfoWindow();
+
+                google.maps.event.addListener(marker, 'click', (function(marker, content) {
+                    return function() {
+                      infowindow.setContent(content);
+                      infowindow.open(map, marker);
+                    }
+                })(marker, title));
+
                 markers[id] = marker;
 
                 console.log('marker', marker);
@@ -216,7 +225,7 @@
                         element.removeClass('hidden');
                         showMarker(id);
                     } else {
-                        addMarker(id, value.location, value.user.username + ': ' + value.content);
+                        addMarker(id, value.location, '<pre>'+JSON.stringify(value, null, 4)+'</pre>');
                         var element = $('#message-template').clone().attr('id','message-'+id).data('id',id);
                         element.find('.content').html(value.content);
                         element.find('.date').html(value.date);
