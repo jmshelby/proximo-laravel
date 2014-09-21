@@ -112,6 +112,11 @@
                     geocodePosition(marker.getPosition());
                 });
 
+                google.maps.event.addListener(map, 'rightclick', function(event) {
+                    marker.setPosition(event.latLng);
+                    geocodePosition(marker.getPosition());
+                });
+
                 heartbeat = setInterval(getMessages, 5000);
             }
 
