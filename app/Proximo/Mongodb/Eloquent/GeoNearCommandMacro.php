@@ -43,17 +43,16 @@ class GeoNearCommandMacro implements ScopeInterface
 
 		// Add Search Query
 		if (!empty($wheres = $this->compileWheres($builder))) {
-			$wheresString = json_encode($wheres);
-			$command['wheresString'] = $wheresString;
+			$command['query'] = $wheres;
 		}
 
 		// Add Minimum Distance
 		if (!is_null($minDistance))
-			$command['minDistance'] = $minDistance;
+			$command['minDistance'] = (float) $minDistance;
 
 		// Add Maximum Distance
 		if (!is_null($maxDistance))
-			$command['maxDistance'] = $minDistance;
+			$command['maxDistance'] = (float) $maxDistance;
 
 		// Execute Command
 		$db = \DB::getMongoDB();
