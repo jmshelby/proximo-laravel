@@ -197,6 +197,17 @@ return array(
 		// Packages
 		'Moloquent'       => 'Jenssegers\Mongodb\Model',
 
+
+		'Proximan'       => 'Proximo\Facades\Manager',
+		'Proxi'          => 'Proximo\Facades\Manager',
+		'Proxiuser'      => 'Proximo\Entities\User',
+		'Proximes'       => 'Proximo\Entities\Message',
+		'Proxidel'       => 'Proximo\Entities\DeliveredMessage',
+
+		'Message'        => 'Proximo\Entities\Message',
+		'Delivery'       => 'Proximo\Entities\DeliveredMessage',
+		'PUser'          => 'Proximo\Entities\User',
+
 	),
 
 );

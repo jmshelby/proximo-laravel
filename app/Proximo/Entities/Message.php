@@ -1,6 +1,7 @@
 <?php namespace Proximo\Entities;
 
 use Jenssegers\Mongodb\Model as Eloquent;
+use Proximo\Mongodb\Eloquent\GeospatialTrait;
 
 /*
  * Need to Make sure the following gets ran, until we can do if from the app
@@ -11,6 +12,8 @@ class Message extends Eloquent
 {
 
 	protected $table = 'proximo.message';
+
+	use GeospatialTrait;
 
 	// == Factories ==============================================================
 
