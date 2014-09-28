@@ -1,7 +1,10 @@
 <?php namespace Proximo;
 
-use Proximo\Entities\Message;
+use Carbon\Carbon;
+
 use Proximo\Entities\User;
+use Proximo\Entities\Message;
+use Proximo\Entities\DeliveredMessage;
 
 use Illuminate\Support\Collection;
 
@@ -33,60 +36,7 @@ class ProximoManager
 		return User::find($id);
 	}
 
-	public function getNearestMessages($lat, $long, $limit = null)
-	{
-		$lat = (float) $lat;
-		$long = (float) $long;
-		$point = array(
-			'type' => "Point",
-			'coordinates' => array($long, $lat),
-		);
-		
-		$q = Message::whereRaw(
-			array(
-				'loc' => array(
-					'$nearSphere' => array('$geometry' => $point),
-				),
-			)
-		);
-
-		if (is_null($limit))
-			$limit = 10;
-		$q->limit($limit);
- 
-		// Get the in-memory collection
-		$messages = $q->get();
-
-		// Sorting the in-mem collection
-		$messages->sortByDesc(function($item) { return @$item->created_at->timestamp; });
-
-		return $messages;
-	}
-
-	// This is the old function that returns messages with x radius of location
-	public function getMessagesNear($lat, $long)
-	{
-		$lat = (float) $lat;
-		$long = (float) $long;
-		$point = array(
-			'type' => "Point",
-			'coordinates' => array($long, $lat),
-		);
-		
-		$q = Message::whereRaw(
-			array(
-				'loc' => array(
-					'$nearSphere' => array('$geometry' => $point),
-					'$maxDistance' => 20000,
-				),
-			)
-		);
-
-		$q->newestFirst();
- 
-		$messages = $q->get();
-		return $messages;
-	}
+	// ==========================================================================
 
 	public function userPostsMessage($user, $message, $lat, $long)
 	{
@@ -97,96 +47,106 @@ class ProximoManager
 		return $newMessage;
 	}
 
+	// ==========================================================================
 
-
-	public function getMessagesNearWithDist($lat, $long, $mult = 1)
+	public function getGuestMessages($lat, $long, $limit = null)
 	{
-		echo "<pre>","\n";
-		echo "","\n";
-		echo "Going to show messages near: lat: $lat, long: $long","\n";
-		echo "","\n";
-		echo "","\n";
-		echo "","\n";
-		echo "","\n";
+		return $this->getMessagesNear($lat, $long, $limit);
+	}
 
-		$lat = (float) $lat;
-		$long = (float) $long;
+	public function getMessagesNear($lat, $long, $limit = null)
+	{
+		// TODO -- Move this somewhere else
+		$minutes = 30;
 
-		$point = array(
-			'type' => "Point",
-			'coordinates' => array($long, $lat),
-		);
-		
-		$db = \DB::getMongoDB();
+		// TODO -- Move this somewhere else
+		if (is_null($limit)) $limit = 30;
 
-		$r = $db->command(array(
-			'geoNear' => 'proximo.message',
-			'near' => $point,
-			'spherical' => true,
-			//'distanceMultiplier' => (3959 * pi()) / 180,
-			//'distanceMultiplier' => 3959,
-			//'distanceMultiplier' => $mult,
-			//'distanceMultiplier' => 2.457495 / 3959, // This is as close as I could get, still not sure the right way
-		));
+		// Limited to the last x minutes
+		$q = Message::where('created_at', '>', Carbon::now()->subMinutes($minutes));
+		$q->limit($limit);
 
+		// Get the in-memory collection
+		$messages = $q->geoNear($lat, $long);
 
-		if (!isset($r['results'])) {
-			return new Collection;
+		// If count is less than the limit, return something else
+		if ($messages->count() < $limit) {
+\Log::info(__METHOD__.": Not enough messages found, returning messages unbounded by location..");
+			// Use the $limit most recent messages (with distances)
+			$messages = Message::limit($limit)->geoNear($lat, $long);
 		}
 
-		$rCollection = new Collection($r['results']);
-		$distances = $rCollection->lists('dis');
-		$objects = $rCollection->lists('obj');
+		// Sorting the in-mem collection (since the nearsphere is sorted by 
+		// distance first)
+		$messages->sortByDesc(function($item) { return @$item->created_at->timestamp; });
 
-		$collection = (new Message)->hydrate($objects);
-		foreach($collection as $index => $message) {
-			$message->command_metadata = (object) array(
-				'distance' => $distances[$index],
-			);
+		return $messages;
+	}
+
+	// ==========================================================================
+
+	public function getUserMessages($user, $lat, $long)
+	{
+		// First - Deliver new messages to user from this location
+		$this->_deliverMessagesToUser($user, $lat, $long);
+
+		// Second - Return delivered messages for this location
+		$messages = $this->_getDeliveredMessages($user, $lat, $long);
+
+		return $messages;
+	}
+
+	protected function _deliverMessagesToUser($user, $lat, $long)
+	{
+		$messagesNear = $this->getMessagesNear($lat, $long);
+
+		$existingDeliveries = DeliveredMessage::forUser($user);
+		$existingDeliveries->whereIn('message_id', $messagesNear->lists('id'));
+		$existingDeliveries = $existingDeliveries->get();
+
+		foreach($messagesNear->getDictionary() as $id => $message) {
+
+			$delivery = $existingDeliveries->first(function($key, $possible) use ($id) {
+				return ($possible->message_id == $id);
+			});
+
+			if ($delivery) {
+				// If delivery already exists, update with max of it's distance
+				$delivery->distance = $message->command_metadata->distance;
+				$delivery->save();
+			} else {
+				// Create new delivery for this message
+				$delivery = DeliveredMessage::createFromMessageForUser($message, $user);
+			}
 		}
 
-		echo "Messages:","\n";
-		print_r($objects);
-		print_r($distances);
-		print_r($collection->toArray());
 	}
 
-
-
-/*
-	public function userPostsMessage($user, $message, $lat, $long)
+	protected function _getDeliveredMessages($user, $lat, $long)
 	{
-		$user = $this->user($user);
-		// TODO - Validate Message
-		// TODO - Location
-		$newMessage = Message::createFromBroadcast($user, $message, $lat, $long);
-		return true;
+		$q = DeliveredMessage::forUser($user);
+		$q->with('message');
+		$q->limit(100); // Just for processing sake
+		$deliveries = $q->geoNear($lat, $long);
+\Log::info(__METHOD__.": Delivery query results: \n".print_r($deliveries->toArray(),true));
+
+		$messages = new Collection;
+		foreach($deliveries as $delivery) {
+
+			$currentDistance = $delivery->command_metadata->distance;
+
+			// Filter out messages where the current distance is greater than the delivered distance
+			if ($currentDistance > $delivery->distance) continue;
+
+			$messages->push($delivery->message);
+		}
+
+		// Sorting the in-mem collection (since the nearsphere is sorted by 
+		// distance first)
+		$messages->sortByDesc(function($item) { return @$item->created_at->timestamp; });
+
+		return $messages;
 	}
-*/
-
-/*
-	public function getUserMessages($user)
-	{
-		$user = $this->user($user);
-		$messages = $user->messages();
-		$messages->newestFirst();
-		$messages->take(20);
-		return $messages->get();
-	}
-*/
-
-
-
-
-
-
-
-/*
-	public function __construct(Dispatch $dispatch)
-	{
-		$this->_dispatch = $dispatch;
-	}
-*/
 
 
 }

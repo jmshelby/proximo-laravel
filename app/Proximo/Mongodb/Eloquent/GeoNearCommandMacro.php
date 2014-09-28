@@ -23,6 +23,7 @@ class GeoNearCommandMacro implements ScopeInterface
 	public function macro_geoNear(Builder $builder, $lat, $long, $minDistance = null, $maxDistance = null)
 	{
 		$query = $builder->getQuery();
+$builder->getModel()->raw()->ensureIndex(array('loc' => '2dsphere'));
 
 		$command = [];
 		// Add Command, and Collection Name

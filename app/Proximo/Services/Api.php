@@ -88,14 +88,15 @@ class Api
 	{
 		$lat = $this->getParamLatitude();
 		$long = $this->getParamLongitude();
-		return $this->_proximoMan->getNearestMessages($lat, $long);
+		return $this->_proximoMan->getGuestMessages($lat, $long);
 	}
 
 	public function getUserMessages()
 	{
+		$user = $this->getUser();
 		$lat = $this->getParamLatitude();
 		$long = $this->getParamLongitude();
-		return $this->_proximoMan->getMessagesNear($lat, $long);
+		return $this->_proximoMan->getUserMessages($user, $lat, $long);
 	}
 
 	public function __call($method, $parameters)

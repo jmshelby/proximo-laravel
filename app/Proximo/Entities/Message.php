@@ -105,6 +105,30 @@ class Message extends Eloquent
 		$this->setLongitude($value);
 	}
 
+
+
+	public function getLatitudeAttribute($value)
+	{
+		return $this->getLatitude($value);
+	}
+
+	public function getLatAttribute($value)
+	{
+		return $this->getLatitude($value);
+	}
+
+	public function getLongitudeAttribute($value)
+	{
+		return $this->getLongitude($value);
+	}
+
+	public function getLongAttribute($value)
+	{
+		return $this->getLongitude($value);
+	}
+
+
+
 	// ===========================================================================
 
 	public function getLongitude()
