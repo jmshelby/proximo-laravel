@@ -79,6 +79,16 @@ class IndexController extends \Proximo\GenePool\Controller\Webservice\Root
 	public function anyMessages()
 	{
 		try {
+			$this->service->getParamUserName();
+		} catch (Exception $e) {
+			return $this->anyGuestMessages();
+		}
+		return $this->anyUserMessages();
+	}
+
+	public function anyGuestMessages()
+	{
+		try {
 			$messages = $this->service->getGuestMessages();
 		} catch (Exception $e) {
 			return $this->_response_exception($e);

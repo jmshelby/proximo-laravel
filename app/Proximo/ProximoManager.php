@@ -71,7 +71,6 @@ class ProximoManager
 
 		// If count is less than the limit, return something else
 		if ($messages->count() < $limit) {
-\Log::info(__METHOD__.": Not enough messages found, returning messages unbounded by location..");
 			// Use the $limit most recent messages (with distances)
 			$messages = Message::limit($limit)->geoNear($lat, $long);
 		}
@@ -128,7 +127,6 @@ class ProximoManager
 		$q->with('message');
 		$q->limit(1000); // Just for processing sake
 		$deliveries = $q->geoNear($lat, $long);
-\Log::info(__METHOD__.": Delivery query results: \n".print_r($deliveries->toArray(),true));
 
 		$messages = new Collection;
 		foreach($deliveries as $delivery) {
