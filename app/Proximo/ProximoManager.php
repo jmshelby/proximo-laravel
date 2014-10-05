@@ -72,7 +72,9 @@ class ProximoManager
 		// If count is less than the limit, return something else
 		if ($messages->count() < $limit) {
 			// Use the $limit most recent messages (with distances)
-			$messages = Message::limit($limit)->geoNear($lat, $long);
+			$recentMessages = Message::limit($limit)->orderBy('created_at','desc')->get();
+			// TODO - Find out why I needed to use '_id' instead of just 'id'
+			$messages = Message::whereIn('_id', $recentMessages->lists('id'))->geoNear($lat, $long);
 		}
 
 		// Sorting the in-mem collection (since the nearsphere is sorted by 
