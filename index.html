@@ -157,9 +157,6 @@
                 }
 
                 var username = $('#username').val();
-                if(!username) {
-                    username = 'test-user';
-                }
 
                 $.get(getApiUrl() + '/webservice/messages?latitude='
                     +position.lat()
