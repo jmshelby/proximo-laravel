@@ -112,7 +112,7 @@ class ProximoManager
 
 			if ($delivery) {
 				// If delivery already exists, update with max of it's distance
-				$delivery->distance = $message->command_metadata->distance;
+				$delivery->distance = max($delivery->distance, $message->command_metadata->distance);
 				$delivery->save();
 			} else {
 				// Create new delivery for this message
@@ -126,7 +126,7 @@ class ProximoManager
 	{
 		$q = DeliveredMessage::forUser($user);
 		$q->with('message');
-		$q->limit(100); // Just for processing sake
+		$q->limit(1000); // Just for processing sake
 		$deliveries = $q->geoNear($lat, $long);
 \Log::info(__METHOD__.": Delivery query results: \n".print_r($deliveries->toArray(),true));
 
