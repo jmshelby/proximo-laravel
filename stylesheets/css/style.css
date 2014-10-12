@@ -1,0 +1,96 @@
+* {
+    box-sizing: border-box;
+}
+body {
+    height: 100%;
+    padding: 0;
+    margin: 0;
+}
+#mapCanvas {
+    height: 100%;
+    margin-right: 300px;
+}
+#infoPanel {
+    position: absolute;
+    bottom: 10px;
+    right: 310px;
+    border-radius: 5px;
+    background-color: white;
+    padding: 9px;
+    font-size: 12px;
+}
+#chat {
+}
+#chat .messages {
+    position: relative;
+    overflow: auto;
+    height: 100%;
+    margin: 0;
+    padding: 10px;
+    padding-bottom: 100px;
+}
+#chat .messages > li {
+    padding-top: 7px;
+    -webkit-animation: messageReveal 0.5s; /* Chrome, Safari, Opera */
+    animation: messageReveal 0.5s;
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes messageReveal {
+    from {margin-top: 100px;}
+    to {margin-top: 0;}
+}
+/* Standard syntax */
+@keyframes messageReveal {
+    from {margin-top: 100px;}
+    to {margin-top: 0;}
+}
+#chat .messages > li .username {
+    color: #999;
+    font-size: 11px;
+    padding-bottom: 5px;
+    float: left;
+}
+#chat .messages > li .date {
+    color: #999;
+    font-size: 11px;
+    float: right;
+}
+#chat .messages > li .content {
+    display: block;
+    clear: both;
+    background: #ddeeb0;
+    border-radius: 7px;
+    margin: 3px;
+    padding: 8px;
+    opacity: 1;
+    max-height: 150px;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+#chat .messages > li.myself .content {
+    background: #eee;
+}
+#chat .messages > li .extended-data {
+    display: none;
+    font-size: 9px;
+    padding: 0 15px;
+}
+#chat .messages > li.hidden {
+    display: none;
+}
+#chat form {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    border-top: 1px solid lightgray;
+    background: white;
+}
+#chat form input {
+    width: 100%;
+}
+#infoPanel div {
+    margin-bottom: 5px;
+}

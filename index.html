@@ -1,12 +1,31 @@
 <html ng-app>
 <head>
+<link rel="stylesheet" type="text/css" href="stylesheets/css/style.css">
 <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
 
 <script>
     function ChatCtrl($scope) {
-        $scope.messages = ['hello','world'];
+        $scope.messages = [
+                            {
+                                username: 'Pete',
+                                date: 'Oct 12, 2014',
+                                content: 'Hello',
+                                data: 'Test message 1'
+                            },
+                            {
+                                username: 'Jake',
+                                date: 'Oct 12, 2014',
+                                content: 'World',
+                                data: 'Test message 2'
+                            }
+                          ];
         $scope.sendMessage = function() {
-            $scope.messages.push($scope.messageText);
+            $scope.messages.push({
+                                    username: $scope.username,
+                                    date: new Date().toDateString(),
+                                    content: $scope.messageText,
+                                    data: 'Submitted message in memory'
+                                });
             $scope.messageText = "";
         };
     }
@@ -17,14 +36,23 @@
 <body>
 
 <div ng-controller="ChatCtrl">
-    <ul>
-        <li ng-repeat="message in messages">{{message}}</li>
-    </ul>
+    <div id="chat">
+        <ul class="messages">
+            <li ng-repeat="message in messages">
+                <div class="username">{{message.username}}</div>
+                <div class="date">{{message.date}}</div>
+                <div class="content">{{message.content}}</div>
+                <pre class="extended-data">{{message.data}}</pre>
+            </li>
+        </ul>
 
-    <form ng-submit="sendMessage()">
-        <input type="text" ng-model="messageText" placeholder="Type your message here" />
-        <input type="submit" value="Send" />
-    </form
+        <form style="overflow: hidden" ng-submit="sendMessage()">
+            <input type="text" ng-model="username" name="username" id="username" placeholder="Your Name"/>
+            <input type="text" ng-model="messageText" name="content" id="content" placeholder="Type a Message"/>
+            <input type="text" ng-model="apihost" name="apihost" id="apihost" placeholder="Api Hostname" value="http://dubdub.jakegub.com"/>
+            <input type="submit" style="position:absolute;left:9999px;"/>
+        </form>
+    </div>
 </div>
 
 </body>
