@@ -38,7 +38,7 @@
 <div ng-controller="ChatCtrl">
     <div id="chat">
         <ul class="messages">
-            <li ng-repeat="message in messages">
+            <li ng-repeat="message in messages" ng-class="{ 'myself': message.username == username }">
                 <div class="username">{{message.username}}</div>
                 <div class="date">{{message.date}}</div>
                 <div class="content">{{message.content}}</div>
