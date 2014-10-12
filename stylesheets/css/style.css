@@ -19,6 +19,22 @@ body {
     padding: 9px;
     font-size: 12px;
 }
+
+#auth {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    bottom: 30%;
+    left: -100%;
+    opacity: 0;
+    transition: all 0.3s;
+}
+#auth.active {
+    display: block;
+    left: 0;
+    opacity: 1;
+}
+
 #chat {
 }
 #chat .messages {
@@ -30,6 +46,7 @@ body {
     padding-bottom: 100px;
 }
 #chat .messages > li {
+    overflow: auto;
     padding-top: 7px;
     -webkit-animation: messageReveal 0.5s; /* Chrome, Safari, Opera */
     animation: messageReveal 0.5s;
@@ -57,17 +74,19 @@ body {
 }
 #chat .messages > li .content {
     display: block;
+    float: right;
     clear: both;
     background: #ddeeb0;
     border-radius: 7px;
-    margin: 3px;
-    padding: 8px;
+    margin: 3px 20px;
+    padding: 8px 12px;
     opacity: 1;
     max-height: 150px;
     transition: all 0.5s;
     cursor: pointer;
 }
 #chat .messages > li.myself .content {
+    float: left;
     background: #eee;
 }
 #chat .messages > li .extended-data {

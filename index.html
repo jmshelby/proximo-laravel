@@ -1,59 +1,67 @@
-<html ng-app>
+<html ng-app="proximo">
 <head>
     <meta name="viewport" content="initial-scale=1, maximum-scale=1">
     <link rel="stylesheet" type="text/css" href="stylesheets/css/style.css">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
 
     <script>
-        function ChatCtrl($scope) {
-            $scope.messages = [
-                                {
-                                    username: 'Pete',
-                                    date: 'Oct 12, 2014',
-                                    content: 'Hello',
-                                    data: 'Test message 1'
-                                },
-                                {
-                                    username: 'Jake',
-                                    date: 'Oct 12, 2014',
-                                    content: 'World',
-                                    data: 'Test message 2'
-                                }
-                              ];
-            $scope.sendMessage = function() {
-                $scope.messages.push({
-                                        username: $scope.username,
-                                        date: new Date().toDateString(),
-                                        content: $scope.messageText,
-                                        data: 'Submitted message in memory'
-                                    });
-                $scope.messageText = "";
-            };
-        }
+        angular.module('proximo')
+
+            .controller('AuthCtrl', function AuthCtrl($scope, $rootScope) {
+
+                $scope.login = function login() {
+                    // TODO : login should be managed by the Facebook and/or Proximo services
+                    if ($scope.loggedIn) {
+                        $rootScope.username = $scope.username = '';
+                        $scope.loggedIn = false;
+                    } else if ($scope.username) {
+                        $rootScope.username = $scope.username;
+                        $scope.loggedIn = true;
+                    }
+                };
+
+            })
+
+            .controller('ChatCtrl', function ChatCtrl($scope, $rootScope) {
+                $scope.messages = [
+                                    {
+                                        username: 'Pete',
+                                        date: 'Oct 12, 2014',
+                                        content: 'Hello',
+                                        data: 'Test message 1'
+                                    },
+                                    {
+                                        username: 'Jake',
+                                        date: 'Oct 12, 2014',
+                                        content: 'World',
+                                        data: 'Test message 2'
+                                    }
+                                  ];
+
+                $scope.username = $rootScope.username;
+
+                $scope.sendMessage = function sendMessage() {
+                    $scope.messages.push({
+                                            username: $rootScope.username,
+                                            date: new Date().toDateString(),
+                                            content: $scope.messageText,
+                                            data: 'Submitted message in memory'
+                                        });
+                    $scope.messageText = "";
+                };
+            });
     </script>
 </head>
 
 <body>
-
-<div ng-controller="ChatCtrl">
-    <div id="chat">
-        <ul class="messages">
-            <li ng-repeat="message in messages" ng-class="{ 'myself': message.username == username }">
-                <div class="username">{{message.username}}</div>
-                <div class="date">{{message.date}}</div>
-                <div class="content">{{message.content}}</div>
-                <pre class="extended-data">{{message.data}}</pre>
-            </li>
-        </ul>
-
-        <form style="overflow: hidden" ng-submit="sendMessage()">
+    <div ng-controller="AuthCtrl">
+        <div id="auth" ng-class="{ 'active' : !loggedIn }">
             <input type="text" ng-model="username" name="username" id="username" placeholder="Your Name"/>
-            <input type="text" ng-model="messageText" name="content" id="content" placeholder="Type a Message"/>
-            <input type="text" ng-model="apihost" name="apihost" id="apihost" placeholder="Api Hostname" value="http://dubdub.jakegub.com"/>
-            <input type="submit" style="position:absolute;left:9999px;"/>
-        </form>
+            <button ng-click="login()">{{ loggedIn ? 'Logout' : 'Login' }}</button>
+        </div>
+
+        <div ng-if="loggedIn" ng-include="'views/chat.html'"></div>
     </div>
-</div>
 
 </body>
 </html>

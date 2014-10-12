@@ -1,0 +1,17 @@
+<div ng-controller="ChatCtrl">
+    <div id="chat">
+        <ul class="messages">
+            <li ng-repeat="message in messages" ng-class="{ 'myself': message.username == username }">
+                <div class="username">{{message.username}}</div>
+                <div class="date">{{message.date}}</div>
+                <div class="content">{{message.content}}</div>
+                <pre class="extended-data">{{message.data}}</pre>
+            </li>
+        </ul>
+
+        <form style="overflow: hidden" ng-submit="sendMessage()">
+            <input type="text" ng-model="messageText" name="content" id="content" placeholder="Type a Message"/>
+            <input type="submit" style="position:absolute;left:9999px;"/>
+        </form>
+    </div>
+</div>
