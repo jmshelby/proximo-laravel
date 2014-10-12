@@ -43,7 +43,7 @@
                 $scope.sendMessage = function sendMessage() {
                     $scope.messages.push({
                                             username: $rootScope.username,
-                                            date: new Date().toDateString(),
+                                            date: new Date().toString(),
                                             content: $scope.messageText,
                                             data: 'Submitted message in memory'
                                         });

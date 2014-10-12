@@ -44,6 +44,7 @@ body {
     margin: 0;
     padding: 10px;
     padding-bottom: 100px;
+    list-style: none;
 }
 #chat .messages > li {
     overflow: auto;
@@ -65,15 +66,21 @@ body {
     color: #999;
     font-size: 11px;
     padding-bottom: 5px;
+    float: right;
+}
+#chat .messages > li.myself .username {
     float: left;
 }
 #chat .messages > li .date {
     color: #999;
     font-size: 11px;
-    float: right;
+    position: absolute;
+    width: 100%;
+    text-align: center;
 }
 #chat .messages > li .content {
     display: block;
+    position: relative;
     float: right;
     clear: both;
     background: #ddeeb0;
@@ -85,9 +92,26 @@ body {
     transition: all 0.5s;
     cursor: pointer;
 }
+#chat .messages > li .content:before {
+    content: '';
+    display: block;
+    border: solid transparent;
+    position: absolute;
+    right: -7px;
+    left: auto;
+    bottom: 9px;
+    border-width: 9px 0 4px 8px;
+    border-left-color: #ddeeb0;
+}
 #chat .messages > li.myself .content {
     float: left;
     background: #eee;
+}
+#chat .messages > li.myself .content:before {
+    left: -7px;
+    right: auto;
+    border-right-color: #eee;
+    border-width: 9px 8px 4px 0;
 }
 #chat .messages > li .extended-data {
     display: none;
