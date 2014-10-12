@@ -1,36 +1,36 @@
 <html ng-app>
 <head>
-<link rel="stylesheet" type="text/css" href="stylesheets/css/style.css">
-<script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" type="text/css" href="stylesheets/css/style.css">
+    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.0.4/angular.min.js"></script>
 
-<script>
-    function ChatCtrl($scope) {
-        $scope.messages = [
-                            {
-                                username: 'Pete',
-                                date: 'Oct 12, 2014',
-                                content: 'Hello',
-                                data: 'Test message 1'
-                            },
-                            {
-                                username: 'Jake',
-                                date: 'Oct 12, 2014',
-                                content: 'World',
-                                data: 'Test message 2'
-                            }
-                          ];
-        $scope.sendMessage = function() {
-            $scope.messages.push({
-                                    username: $scope.username,
-                                    date: new Date().toDateString(),
-                                    content: $scope.messageText,
-                                    data: 'Submitted message in memory'
-                                });
-            $scope.messageText = "";
-        };
-    }
-</script>
-
+    <script>
+        function ChatCtrl($scope) {
+            $scope.messages = [
+                                {
+                                    username: 'Pete',
+                                    date: 'Oct 12, 2014',
+                                    content: 'Hello',
+                                    data: 'Test message 1'
+                                },
+                                {
+                                    username: 'Jake',
+                                    date: 'Oct 12, 2014',
+                                    content: 'World',
+                                    data: 'Test message 2'
+                                }
+                              ];
+            $scope.sendMessage = function() {
+                $scope.messages.push({
+                                        username: $scope.username,
+                                        date: new Date().toDateString(),
+                                        content: $scope.messageText,
+                                        data: 'Submitted message in memory'
+                                    });
+                $scope.messageText = "";
+            };
+        }
+    </script>
 </head>
 
 <body>
