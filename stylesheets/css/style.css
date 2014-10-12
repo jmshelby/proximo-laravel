@@ -1,10 +1,22 @@
 * {
     box-sizing: border-box;
+    font-family: "Helvetica Neue", helvetica, arial, sans-serif;
 }
 body {
     height: 100%;
     padding: 0;
     margin: 0;
+}
+input, button {
+    font-size: 20px;
+    font-color: #aaa;
+    border: 1px solid #eee;
+    padding: 3px 8px;
+    background: #fff;
+    border-radius: 7px;
+}
+button {
+    background: #eee;
 }
 #mapCanvas {
     height: 100%;
@@ -45,6 +57,8 @@ body {
     padding: 10px;
     padding-bottom: 100px;
     list-style: none;
+
+    -webkit-overflow-scrolling: touch;
 }
 #chat .messages > li {
     overflow: auto;
