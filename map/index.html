@@ -1,0 +1,386 @@
+<html>
+    <head>
+        <title></title>
+        <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+        <script type="text/javascript" src="http://maps.google.com/maps/api/js?sensor=true"></script>
+        <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script type="text/javascript">
+            /* 
+             * Draggable Map Marker code from http://www.smipple.net/snippet/sulhas/Example%20Draggable%20Marker%20Google%20Maps
+             */
+            var geocoder = new google.maps.Geocoder();
+            var map;
+            var lastKnownPosition;
+            var markers = [];
+            var heartbeat;
+
+            function geocodePosition(pos) {
+                lastKnownPosition = pos;
+                getMessages(pos);
+    
+                geocoder.geocode({
+                    latLng: pos
+                }, function(responses) {
+                    if (responses && responses.length > 0) {
+                        updateMarkerAddress(responses[0].formatted_address);
+                    } else {
+                        updateMarkerAddress('Cannot determine address at this location.');
+                    }
+                });
+            }
+
+            function updateMarkerStatus(str) {
+                document.getElementById('markerStatus').innerHTML = str;
+            }
+
+            function updateMarkerPosition(latLng) {
+                document.getElementById('info').innerHTML = [
+                    latLng.lat(),
+                    latLng.lng()
+                ].join(', ');
+            }
+
+            function updateMarkerAddress(str) {
+                document.getElementById('address').innerHTML = str;
+            }
+
+            function addMarker(id, position, title) {
+                console.log('position', position);
+                var latLng = new google.maps.LatLng(position.latitude, position.longitude);
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    title: title,
+                    map: map,
+                    animation: google.maps.Animation.DROP,
+                    icon: "http://maps.google.com/mapfiles/ms/micons/blue.png"
+                });
+
+                var infowindow = new google.maps.InfoWindow();
+
+                google.maps.event.addListener(marker, 'click', (function(marker, content) {
+                    return function() {
+                      infowindow.setContent(content);
+                      infowindow.open(map, marker);
+                    }
+                })(marker, title));
+
+                markers[id] = marker;
+
+                console.log('marker', marker);
+            }
+
+            function hideMarkers() {
+                for (var i in markers) {
+                    markers[i].setMap(null);
+                }
+            }
+
+            function showMarker(id) {
+                markers[id].setMap(map);
+            }
+
+            function initialize(position) {
+                var latLng = new google.maps.LatLng(position.coords.latitude, position.coords.longitude);
+                map = new google.maps.Map(document.getElementById('mapCanvas'), {
+                    zoom: 8,
+                    center: latLng,
+                    mapTypeId: google.maps.MapTypeId.ROADMAP
+                });
+                var marker = new google.maps.Marker({
+                    position: latLng,
+                    title: 'Your Current Location',
+                    map: map,
+                    draggable: true
+                });
+
+                // Update current position info.
+                updateMarkerPosition(latLng);
+                geocodePosition(latLng);
+
+                // Add dragging event listeners.
+                google.maps.event.addListener(marker, 'dragstart', function() {
+                    updateMarkerAddress('Dragging...');
+                });
+
+                google.maps.event.addListener(marker, 'drag', function() {
+                    updateMarkerStatus('Dragging...');
+                    updateMarkerPosition(marker.getPosition());
+                });
+
+                google.maps.event.addListener(marker, 'dragend', function() {
+                    updateMarkerStatus('Drag ended');
+                    geocodePosition(marker.getPosition());
+                });
+
+                google.maps.event.addListener(map, 'rightclick', function(event) {
+                    marker.setPosition(event.latLng);
+                    geocodePosition(marker.getPosition());
+                });
+
+                heartbeat = setInterval(getMessages, 5000);
+            }
+
+            function initializeDefault() {
+                var defaultPosition = {
+                    coords: {
+                        latitude: 39.739341754525086,
+                        longitude: -104.98478651046753
+                    }
+                }
+
+                initialize(defaultPosition);
+            }
+
+            function loadGeolocation() {
+                if (navigator.geolocation) {
+                    navigator.geolocation.getCurrentPosition(initialize, initializeDefault);
+                } else {
+                    // no geolocation service
+                    initializeDefault();
+                }
+            }
+
+            // Onload handler to fire off the app.
+            google.maps.event.addDomListener(window, 'load', loadGeolocation);
+        </script>
+        <script type="text/javascript">
+            var messages = {};
+            var messageIndex = 1;
+
+            function getApiUrl() {
+                return $('#apihost').val();
+            }
+
+            function getMessages(position) {
+                if(!position) {
+                    position = lastKnownPosition;
+                }
+
+                var username = $('#username').val();
+
+                $.get(getApiUrl() + '/webservice/messages?latitude='
+                    +position.lat()
+                    +'&longitude='
+                    +position.lng()
+                    +'&username='+username,
+                function(response) {
+
+                    var newMessages = {};
+
+                    $.each(response.response.reverse(), function(key, message) {
+                        newMessages[message.id] = message;
+                    });
+
+                    messages = newMessages;
+                    updateMessageView();
+                });
+
+            }
+
+            function postMessage(message) {
+                clearInterval(heartbeat);
+                var position = lastKnownPosition;
+                var username = $('#username').val();
+                if(!username || !message) {
+                    return; // cannot post messages without name and a message
+                } else {
+                    // Save username for next time
+                    if(typeof(Storage) !== "undefined") {
+                        localStorage.setItem("username", username);
+                    }
+                }
+
+                $.get(getApiUrl() + '/webservice/post-message?latitude='
+                    +position.lat()
+                    +'&longitude='
+                    +position.lng()
+                    +'&username='+username
+                    +'&content='+message,
+                function(response) {
+
+                    var newMessage = response.response;
+                    messages[newMessage.id] = newMessage;
+
+                    updateMessageView();
+
+                    heartbeat = setInterval(getMessages, 5000);
+                });
+            }
+
+            function addMessage(id) {
+                messages[id].active = true;
+                updateMessageView();
+            }
+
+            function updateMessageView() {
+                console.log('messages', messages);
+
+                var domMessages = $('.messages');
+                domMessages.children('li').addClass('hidden');
+
+                hideMarkers();
+
+                var previousElement = null;
+                $.each(messages, function(id, value) {
+                    var element = $('#message-'+id);
+                    if (element.size()) {
+                        element.removeClass('hidden');
+                        showMarker(id);
+                    } else {
+                        addMarker(id, value.location, '<pre>'+JSON.stringify(value, null, 4)+'</pre>');
+                        var element = $('#message-template').clone().attr('id','message-'+id).data('id',id);
+                        element.find('.content').html(value.content);
+                        element.find('.date').html(value.date);
+                        element.find('.username').html(value.user.username);
+                        element.find('.extended-data').html(JSON.stringify(value, null, 4));
+                        element.click(function() {
+                            $(this).find('.extended-data').slideToggle();
+                        })
+                        if(value.user.username == $('#username').val()) {
+                            element.addClass('myself');
+                        }
+                        element.removeClass('hidden');
+                        if (previousElement) {
+                            previousElement.after(element);
+                        } else {
+                            domMessages.prepend(element);
+                        }
+                    }
+                    previousElement = element;
+                });
+
+                domMessages.scrollTop(domMessages.prop("scrollHeight"));
+            }
+
+            $(document).on('submit', '#chat form', function(e) {
+                e.preventDefault();
+                var input = $(this).find('#content');
+                postMessage(input.val());
+                input.val('');
+            });
+
+            $(function(){
+                if(typeof(Storage) !== "undefined") {
+                    $('#username').val(localStorage.getItem("username"));
+                }
+            });
+        </script>
+        <style type="text/css">
+            * {
+                box-sizing: border-box;
+            }
+            body {
+                height: 100%;
+                padding: 0;
+                margin: 0;
+            }
+            #mapCanvas {
+                height: 100%;
+                margin-right: 300px;
+            }
+            #infoPanel {
+                position: absolute;
+                bottom: 10px;
+                right: 310px;
+                border-radius: 5px;
+                background-color: white;
+                padding: 9px;
+                font-size: 12px;
+            }
+            #chat {
+                position: relative;
+                float: right;
+                height: 100%;
+                width: 300px;
+            }
+            #chat .messages {
+                position: relative;
+                overflow: auto;
+                height: 100%;
+                margin: 0;
+                padding: 10px;
+                padding-bottom: 100px;
+            }
+            #chat .messages > li {
+                padding-top: 7px;
+            }
+            #chat .messages > li .username {
+                color: #999;
+                font-size: 11px;
+                padding-bottom: 5px;
+                float: left;
+            }
+            #chat .messages > li .date {
+                color: #999;
+                font-size: 11px;
+                float: right;
+            }
+            #chat .messages > li .content {
+                display: block;
+                clear: both;
+                background: #ddeeb0;
+                border-radius: 7px;
+                margin: 3px;
+                padding: 8px;
+                opacity: 1;
+                max-height: 150px;
+                transition: all 0.5s;
+                cursor: pointer;
+            }
+            #chat .messages > li.myself .content {
+                background: #eee;
+            }
+            #chat .messages > li .extended-data {
+                display: none;
+                font-size: 9px;
+                padding: 0 15px;
+            }
+            #chat .messages > li.hidden {
+                display: none;
+            }
+            #chat form {
+                position: absolute;
+                bottom: 0;
+                left: 0;
+                width: 100%;
+                padding: 10px;
+                margin: 0;
+                border-top: 1px solid lightgray;
+                background: white;
+            }
+            #chat form input {
+                width: 100%;
+            }
+            #infoPanel div {
+                margin-bottom: 5px;
+            }
+        </style>
+    </head>
+    <body>
+        <div id="chat">
+            <ul class="messages">
+                <li id="message-template">
+                    <div class="username">Username</div>
+                    <div class="date">Date</div>
+                    <div class="content">Content</div>
+                    <pre class="extended-data">Extended Data</pre>
+                </li>
+            </ul>
+            <form style="overflow: hidden">
+                <input type="text" name="username" id="username" placeholder="Your Name"/>
+                <input type="text" name="content" id="content" placeholder="Type a Message"/>
+                <input type="text" name="apihost" id="apihost" placeholder="Api Hostname" value="http://dubdub.jakegub.com"/>
+                <input type="submit" style="position:absolute;left:9999px;"/>
+            </form>
+        </div>
+        <div id="mapCanvas"></div>
+        <div id="infoPanel">
+            <b>Marker status:</b>
+            <div id="markerStatus"><i>Click and drag the marker.</i></div>
+            <b>Current position:</b>
+            <div id="info"></div>
+            <b>Closest matching address:</b>
+            <div id="address"></div>
+        </div>
+    </body>
+</html>
