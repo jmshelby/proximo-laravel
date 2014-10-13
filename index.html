@@ -11,12 +11,10 @@
 
                 $scope.login = function login() {
                     // TODO : login should be managed by the Facebook and/or Proximo services
-                    if ($scope.loggedIn) {
+                    if ($rootScope.username) {
                         $rootScope.username = $scope.username = '';
-                        $scope.loggedIn = false;
                     } else if ($scope.username) {
                         $rootScope.username = $scope.username;
-                        $scope.loggedIn = true;
                     }
                 };
 
@@ -54,13 +52,9 @@
 </head>
 
 <body>
-    <div ng-controller="AuthCtrl">
-        <div id="auth" ng-class="{ 'active' : !loggedIn }">
-            <input type="text" ng-model="username" name="username" id="username" placeholder="Your Name"/>
-            <button ng-click="login()">{{ loggedIn ? 'Logout' : 'Login' }}</button>
-        </div>
-
-        <div ng-if="loggedIn" ng-include="'views/chat.html'"></div>
+    <div>
+        <div ng-include="'views/auth.html'"></div>
+        <div ng-if="$root.username" ng-include="'views/chat.html'"></div>
     </div>
 
 </body>

@@ -9,14 +9,16 @@ body {
 }
 input, button {
     font-size: 20px;
-    font-color: #aaa;
     border: 1px solid #eee;
     padding: 3px 8px;
     background: #fff;
     border-radius: 7px;
+
+    -webkit-appearance: none;  /* Remove default shadow */
 }
 button {
-    background: #eee;
+    color: #888;
+    background: #ddd;
 }
 #mapCanvas {
     height: 100%;
@@ -36,15 +38,19 @@ button {
     position: absolute;
     width: 100%;
     text-align: center;
-    bottom: 30%;
-    left: -100%;
-    opacity: 0;
+    margin-top: 0;
+    padding: 5px;
+    background: #eee;
+    z-index: 10;
+
     transition: all 0.3s;
 }
 #auth.active {
     display: block;
-    left: 0;
-    opacity: 1;
+    margin-top: 60%;
+}
+#auth input {
+    width: 50%;
 }
 
 #chat {
@@ -55,7 +61,8 @@ button {
     height: 100%;
     margin: 0;
     padding: 10px;
-    padding-bottom: 100px;
+    padding-top: 50px;
+    padding-bottom: 60px;
     list-style: none;
 
     -webkit-overflow-scrolling: touch;
@@ -89,7 +96,8 @@ button {
     color: #999;
     font-size: 11px;
     position: absolute;
-    width: 100%;
+    width: 80%;
+    margin-left: 10%;
     text-align: center;
 }
 #chat .messages > li .content {
@@ -142,8 +150,7 @@ button {
     width: 100%;
     padding: 10px;
     margin: 0;
-    border-top: 1px solid lightgray;
-    background: white;
+    background: #eee;
 }
 #chat form input {
     width: 100%;
