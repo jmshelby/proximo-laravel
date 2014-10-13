@@ -80,7 +80,14 @@ Proximo.prototype = {
 
 	// Post Message with Text, callback optional
 	postMessage: function(messageText, callback) {
-//
+		$.ajax({
+			type: 'POST',
+			url:  this.getMessagePostRequestUrl(),
+			data: this.getMessagePostRequestParams(messageText),
+			success: $.proxy(this._messagePostSuccess, this),
+			error: $.proxy(this._messagePostError, this),
+		});
+		this.messagePostCallback = callback;
 	},
 
 	// When new message(s), call me back
@@ -113,6 +120,17 @@ Proximo.prototype = {
 		}
 		return data;
 	},
+	getMessagePostRequestUrl: function() {
+		return this.options.webserviceHost + 'webservice/post-message';
+	},
+	getMessagePostRequestParams: function(message) {
+		var data = {};
+		data.longitude = this.longitude;
+		data.latitude = this.latitude;
+		data.username = this.username;
+		data.content = this.message;
+		return data;
+	},
 	// Internal Things
 
 	_updatePosition: function(position) {
@@ -143,6 +161,8 @@ Proximo.prototype = {
 		$.geolocation.stop(this.geoWatchId);
 		// Stop Polling
 		this._stopPollingCycle();
+		// Dump callbacks
+		this.messageFetchCallbacks = [];
 		// TODO -- is there a better way to handle polling timers?
 	},
 
@@ -152,6 +172,9 @@ Proximo.prototype = {
 		if (this.intervalTimerId) {
 			return false;
 		}
+		// Start initial request now
+		this._initiateMessageFetch();
+		// Start interval calling now
 		this.intervalTimerId = setInterval($.proxy(this._initiateMessageFetch, this),this.options.pollInterval * 1000);
 		return this.intervalTimerId;
 	},
@@ -171,12 +194,13 @@ Proximo.prototype = {
 	// Callback for api call to get messages
 	_messageFetchSuccess: function(response) {
 		// TODO - Process and Merge with exising set
-		this.lastMessageFetchResponse = response.response;
+		var responseForCallback = response.response
+		this.lastMessageFetchResponse = responseForCallback;
 		// Callback client with new message set
 		if (this.messageFetchCallbacks) {
-			$.each(this.messageFetchCallbacks, function(callback) {
+			$.each(this.messageFetchCallbacks, function(key, callback) {
 				// TODO - make sure callback is valid
-				callback(this.lastMessageFetchResponse);
+				callback(responseForCallback);
 			});
 		}
 		console.log("Request for messages returned..");
@@ -189,6 +213,30 @@ Proximo.prototype = {
 
 	// --- Sending and Processing Submission Requests ---
 
+	// Callback for api call to post a message
+	_messagePostSuccess: function(response) {
+		// TODO - Process and Merge with exising set
+		var responseForCallback = response.response
+
+		if (this.messagePostCallback) {
+			this.messagePostCallback(response);
+			this.messagePostCallback = null;
+		}
+
+		// TODO - Callback client(s) with new message set
+		// if (this.messageFetchCallbacks) {
+		// 	$.each(this.messageFetchCallbacks, function(key, callback) {
+		// 		// TODO - make sure callback is valid
+		// 		callback(responseForCallback);
+		// 	});
+		// }
+		// console.log("Request for messages returned..");
+	},
+	// Callback (error) for api call to post a message
+	_messagePostError: function() {
+		// Callback client with event
+		console.log("request for message post failed");
+	},
 	// --- Session Stuff ---
 
 	_ensureLoggedIn: function() {
