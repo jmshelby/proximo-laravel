@@ -42,6 +42,8 @@ button {
     padding: 5px;
     background: #eee;
     z-index: 10;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 
     transition: all 0.3s;
 }
@@ -151,6 +153,8 @@ button {
     padding: 10px;
     margin: 0;
     background: #eee;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
 }
 #chat form input {
     width: 100%;
