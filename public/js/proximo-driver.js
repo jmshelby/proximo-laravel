@@ -86,12 +86,15 @@ Proximo.prototype = {
 	// When new message(s), call me back
 	// If there are already messages, return them right away
 	listen: function(callback) {
-//
+		if (!this.messageFetchCallbacks) {
+			this.messageFetchCallbacks = [];
+		}
+		this.messageFetchCallbacks.push(callback);
 	},
 
 	// destroy [stop listening]
 	kill: function() {
-		this.destructCleanup();
+		this._destructCleanup();
 	},
 
 	// ?? register location processing events ??
@@ -113,6 +116,8 @@ Proximo.prototype = {
 	// Internal Things
 
 	_updatePosition: function(position) {
+		console.log("New Geolocation tracked...");
+
 		this.latitude = position.coords.latitude;
 		this.longitude = position.coords.longitude;
 
@@ -166,14 +171,20 @@ Proximo.prototype = {
 	// Callback for api call to get messages
 	_messageFetchSuccess: function(response) {
 		// TODO - Process and Merge with exising set
+		this.lastMessageFetchResponse = response.response;
 		// Callback client with new message set
-this.lastMessageFetchResponse = response.response;
-console.log("Request for messages returned..");
+		if (this.messageFetchCallbacks) {
+			$.each(this.messageFetchCallbacks, function(callback) {
+				// TODO - make sure callback is valid
+				callback(this.lastMessageFetchResponse);
+			});
+		}
+		console.log("Request for messages returned..");
 	},
 	// Callback (error) for api call to get messages
 	_messageFetchError: function() {
 		// Callback client with event
-console.log("request for messages failed");
+		console.log("request for messages failed");
 	},
 
 	// --- Sending and Processing Submission Requests ---
