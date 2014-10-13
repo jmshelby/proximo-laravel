@@ -10,7 +10,7 @@ ProximoConfig = {
 
 
 // Local config
-ProximoConfig.webserviceHost = 'http://local.proximo.com:8000/';
+//ProximoConfig.webserviceHost = 'http://local.proximo.com:8000/';
 
 
 
@@ -57,6 +57,8 @@ function Proximo(options)
 	this.positionUpdateStamp = null;
 	this.latitude = null;
 	this.longitude = null;
+	// TODO - prime above values with stored cookie values ?
+
 }
 
 Proximo.prototype = {
@@ -134,16 +136,24 @@ Proximo.prototype = {
 	_destructCleanup: function() {
 		// Stop watching to geo location
 		$.geolocation.stop(this.geoWatchId);
-// Stop Polling
+		// Stop Polling
+		this._stopPollingCycle();
+		// TODO -- is there a better way to handle polling timers?
 	},
-
 
 	// --- Fetching and Receiving Messages ---
 
 	_startPollingCycle: function() {
-
+		if (this.intervalTimerId) {
+			return false;
+		}
+		this.intervalTimerId = setInterval($.proxy(this._initiateMessageFetch, this),this.options.pollInterval * 1000);
+		return this.intervalTimerId;
 	},
-	// Start Request to get Messages
+	_stopPollingCycle: function() {
+		clearInterval(this.intervalTimerId);
+	},
+	// Start a single Request to get Messages
 	_initiateMessageFetch: function() {
 		$.ajax({
 			url:  this.getMessageFetchRequestUrl(),
@@ -154,14 +164,16 @@ Proximo.prototype = {
 		// TODO -- Add other callbacks for other issues
 	},
 	// Callback for api call to get messages
-	_messageFetchSuccess: function() {
+	_messageFetchSuccess: function(response) {
 		// TODO - Process and Merge with exising set
 		// Callback client with new message set
-		// Initiate new message request here??
+this.lastMessageFetchResponse = response.response;
+console.log("Request for messages returned..");
 	},
 	// Callback (error) for api call to get messages
 	_messageFetchError: function() {
 		// Callback client with event
+console.log("request for messages failed");
 	},
 
 	// --- Sending and Processing Submission Requests ---
