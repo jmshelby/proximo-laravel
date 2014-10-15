@@ -128,7 +128,7 @@ Proximo.prototype = {
 		data.longitude = this.longitude;
 		data.latitude = this.latitude;
 		data.username = this.username;
-		data.content = this.message;
+		data.content = message;
 		return data;
 	},
 	// Internal Things
