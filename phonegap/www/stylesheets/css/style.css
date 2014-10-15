@@ -1,0 +1,191 @@
+* {
+    box-sizing: border-box;
+    font-family: "Helvetica Neue", helvetica, arial, sans-serif;
+}
+html, body, .full-height {
+    height: 100%;
+}
+body {
+    padding: 0;
+    margin: 0;
+}
+input, button {
+    font-size: 20px;
+    border: 1px solid #eee;
+    padding: 3px 8px;
+    background: #fff;
+    border-radius: 7px;
+
+    -webkit-appearance: none;  /* Remove default shadow */
+}
+button {
+    color: #888;
+    background: #ddd;
+}
+#mapCanvas {
+    height: 100%;
+    margin-right: 300px;
+}
+#infoPanel {
+    position: absolute;
+    bottom: 10px;
+    right: 310px;
+    border-radius: 5px;
+    background-color: white;
+    padding: 9px;
+    font-size: 12px;
+}
+
+#auth {
+    position: absolute;
+    width: 100%;
+    text-align: center;
+    margin-top: 0;
+    padding: 5px;
+    background: #eee;
+    z-index: 10;
+    border-top: 20px solid #ddd;
+    border-bottom: 1px solid #ddd;
+
+    transition: all 0.3s;
+}
+#auth.active {
+    display: block;
+    margin-top: 50vh;
+    border-top: 1px solid #ddd;
+}
+#auth input {
+    width: 50%;
+}
+
+#chat {
+}
+#chat .messages {
+    position: relative;
+    overflow: auto;
+    max-height: 100%;
+    margin: 0;
+    padding: 10px;
+    padding-top: 50px;
+    padding-bottom: 60px;
+    list-style: none;
+
+    -webkit-overflow-scrolling: touch;
+}
+#chat .messages > li {
+    position: relative;
+    overflow: auto;
+    padding-top: 7px;
+    transition: opacity 0.3s;
+    -webkit-animation: messageReveal 0.5s; /* Chrome, Safari, Opera */
+    animation: messageReveal 0.5s;
+}
+/* Chrome, Safari, Opera */
+@-webkit-keyframes messageReveal {
+    from {margin-top: 100px; margin-bottom: -100px;}
+    to {margin-top: 0; margin-bottom: 0;}
+}
+/* Standard syntax */
+@keyframes messageReveal {
+    from {margin-top: 100px; margin-bottom: -100px;}
+    to {margin-top: 0; margin-bottom: 0;}
+}
+#chat .messages > li.pending {
+    opacity: 0.4;
+}
+#chat .messages > li .username {
+    display: none;
+    color: #999;
+    font-size: 11px;
+    padding-bottom: 5px;
+    float: left;
+}
+#chat .messages > li.myself .username {
+    float: right;
+}
+#chat .messages > li .date {
+    display: none;
+    color: #999;
+    font-size: 11px;
+    position: absolute;
+    width: 80%;
+    margin-left: 10%;
+    text-align: center;
+}
+#chat .messages > li .icon {
+    border-radius: 5px;
+    border: 2px solid #bbb;
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    bottom: 7px;
+}
+#chat .messages > li.myself .icon {
+    right: 0;
+}
+#chat .messages > li .content {
+    display: block;
+    position: relative;
+    float: left;
+    clear: both;
+    background: #eee;
+    border-radius: 7px;
+    margin: 3px 30px;
+    padding: 8px 12px;
+    opacity: 1;
+    max-height: 150px;
+    transition: all 0.5s;
+    cursor: pointer;
+}
+#chat .messages > li .content:before {
+    content: '';
+    display: block;
+    border: solid transparent;
+    position: absolute;
+    left: -7px;
+    right: auto;
+    border-right-color: #eee;
+    border-width: 9px 8px 4px 0;
+    bottom: 9px;
+}
+#chat .messages > li.myself .content {
+    float: right;
+    background: #ddeeb0;
+}
+#chat .messages > li.myself .content:before {
+    right: -7px;
+    left: auto;
+    border-width: 9px 0 4px 8px;
+    border-left-color: #ddeeb0;
+}
+#chat .messages > li .extended-data {
+    display: none;
+    font-size: 9px;
+    padding: 0 15px;
+}
+#chat .messages > li.hidden {
+    display: none;
+}
+#chat form {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    padding: 10px;
+    margin: 0;
+    background: #eee;
+    border-top: 1px solid #ddd;
+    border-bottom: 1px solid #ddd;
+}
+#chat form input {
+    width: 100%;
+}
+#chat form input[type=submit] {
+    width: 0;
+    height: 0;
+    position: absolute;
+    z-index: -1;
+}
+#infoPanel div {
+    margin-bottom: 5px;
+}
