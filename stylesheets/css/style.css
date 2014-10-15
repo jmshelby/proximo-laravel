@@ -2,8 +2,10 @@
     box-sizing: border-box;
     font-family: "Helvetica Neue", helvetica, arial, sans-serif;
 }
-body {
+html, body, .full-height {
     height: 100%;
+}
+body {
     padding: 0;
     margin: 0;
 }
@@ -42,14 +44,15 @@ button {
     padding: 5px;
     background: #eee;
     z-index: 10;
-    border-top: 1px solid #ddd;
+    border-top: 20px solid #ddd;
     border-bottom: 1px solid #ddd;
 
     transition: all 0.3s;
 }
 #auth.active {
     display: block;
-    margin-top: 60%;
+    margin-top: 50vh;
+    border-top: 1px solid #ddd;
 }
 #auth input {
     width: 50%;
@@ -60,7 +63,7 @@ button {
 #chat .messages {
     position: relative;
     overflow: auto;
-    height: 100%;
+    max-height: 100%;
     margin: 0;
     padding: 10px;
     padding-top: 50px;
@@ -70,31 +73,38 @@ button {
     -webkit-overflow-scrolling: touch;
 }
 #chat .messages > li {
+    position: relative;
     overflow: auto;
     padding-top: 7px;
+    transition: opacity 0.3s;
     -webkit-animation: messageReveal 0.5s; /* Chrome, Safari, Opera */
     animation: messageReveal 0.5s;
 }
 /* Chrome, Safari, Opera */
 @-webkit-keyframes messageReveal {
-    from {margin-top: 100px;}
-    to {margin-top: 0;}
+    from {margin-top: 100px; margin-bottom: -100px;}
+    to {margin-top: 0; margin-bottom: 0;}
 }
 /* Standard syntax */
 @keyframes messageReveal {
-    from {margin-top: 100px;}
-    to {margin-top: 0;}
+    from {margin-top: 100px; margin-bottom: -100px;}
+    to {margin-top: 0; margin-bottom: 0;}
+}
+#chat .messages > li.pending {
+    opacity: 0.4;
 }
 #chat .messages > li .username {
+    display: none;
     color: #999;
     font-size: 11px;
     padding-bottom: 5px;
-    float: right;
-}
-#chat .messages > li.myself .username {
     float: left;
 }
+#chat .messages > li.myself .username {
+    float: right;
+}
 #chat .messages > li .date {
+    display: none;
     color: #999;
     font-size: 11px;
     position: absolute;
@@ -102,14 +112,25 @@ button {
     margin-left: 10%;
     text-align: center;
 }
+#chat .messages > li .icon {
+    border-radius: 5px;
+    border: 2px solid #bbb;
+    height: 20px;
+    width: 20px;
+    position: absolute;
+    bottom: 7px;
+}
+#chat .messages > li.myself .icon {
+    right: 0;
+}
 #chat .messages > li .content {
     display: block;
     position: relative;
-    float: right;
+    float: left;
     clear: both;
-    background: #ddeeb0;
+    background: #eee;
     border-radius: 7px;
-    margin: 3px 20px;
+    margin: 3px 30px;
     padding: 8px 12px;
     opacity: 1;
     max-height: 150px;
@@ -121,21 +142,21 @@ button {
     display: block;
     border: solid transparent;
     position: absolute;
-    right: -7px;
-    left: auto;
-    bottom: 9px;
-    border-width: 9px 0 4px 8px;
-    border-left-color: #ddeeb0;
-}
-#chat .messages > li.myself .content {
-    float: left;
-    background: #eee;
-}
-#chat .messages > li.myself .content:before {
     left: -7px;
     right: auto;
     border-right-color: #eee;
     border-width: 9px 8px 4px 0;
+    bottom: 9px;
+}
+#chat .messages > li.myself .content {
+    float: right;
+    background: #ddeeb0;
+}
+#chat .messages > li.myself .content:before {
+    right: -7px;
+    left: auto;
+    border-width: 9px 0 4px 8px;
+    border-left-color: #ddeeb0;
 }
 #chat .messages > li .extended-data {
     display: none;
@@ -158,6 +179,12 @@ button {
 }
 #chat form input {
     width: 100%;
+}
+#chat form input[type=submit] {
+    width: 0;
+    height: 0;
+    position: absolute;
+    z-index: -1;
 }
 #infoPanel div {
     margin-bottom: 5px;

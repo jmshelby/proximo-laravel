@@ -1,10 +1,18 @@
+<!DOCTYPE html>
 <html ng-app="proximo">
 <head>
-    <meta name="viewport" content="initial-scale=1, maximum-scale=1">
+    <title>Proximo</title>
+    <meta charset="utf-8" />
+    <meta name="format-detection" content="telephone=no" />
+    <meta name="msapplication-tap-highlight" content="no" />
     <link rel="stylesheet" type="text/css" href="stylesheets/css/style.css">
-    <script src="http://ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.26/angular.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
+    <script src="http://dubdub.jakegub.com/js/proximo-driver.js"></script>
+    <script src="http://dubdub.jakegub.com/js/vendor/manuelbieh/jQuery-Geolocation/jquery.geolocation.js"></script>
 
     <script>
+        var proximo = new Proximo();
         angular.module('proximo', [])
 
             .controller('AuthCtrl', function AuthCtrl($scope, $rootScope) {
@@ -15,47 +23,79 @@
                         $rootScope.username = $scope.username = '';
                     } else if ($scope.username) {
                         $rootScope.username = $scope.username;
+                        proximo = new Proximo({username:$scope.username});
                     }
                 };
 
             })
 
             .controller('ChatCtrl', function ChatCtrl($scope, $rootScope) {
-                $scope.messages = [
-                                    {
-                                        username: 'Pete',
-                                        date: 'Oct 12, 2014',
-                                        content: 'Hello',
-                                        data: 'Test message 1'
-                                    },
-                                    {
-                                        username: 'Jake',
-                                        date: 'Oct 12, 2014',
-                                        content: 'World',
-                                        data: 'Test message 2'
-                                    }
-                                  ];
+                $scope.messages = [];
+                $scope.loaded = false;
 
                 $scope.username = $rootScope.username;
 
-                $scope.sendMessage = function sendMessage() {
-                    $scope.messages.push({
-                                            username: $rootScope.username,
-                                            date: new Date().toString(),
-                                            content: $scope.messageText,
-                                            data: 'Submitted message in memory'
-                                        });
+                $scope.scrollToBottom = function scrollToBottom() {
+                    // TODO: we don't really need to rely on jQuery for this app
+                    //  so it would be nice to not use it here
+                    $('.messages').animate({ scrollTop: $('.messages')[0].scrollHeight }, 1000);
+                };
+
+                // TODO: this function literally sucks balls
+                $scope.scrollToBottomIfPrettyCloseAlready = function scrollToBottomIfPrettyCloseAlready() {
+                    if( $('.messages').scrollTop() + $('.messages').outerHeight() >
+                        $('.messages')[0].scrollHeight - $('.messages').children().last().outerHeight() - 20 ) {
+                            $scope.scrollToBottom();
+                    }
+                };
+
+                $scope.postMessage = function postMessage() {
+
+                    // TODO: resolve new message concurrency issues with Proximo.listen() callback
+
+                    $scope.scrollToBottom();
+
+                    console.log('message text', $scope.messageText);
+                    proximo.postMessage($scope.messageText, function(data) {
+                        console.log('postMessage() return', data);
+                        var newMessage = data.response;
+                        $scope.messages[newMessage.id] = newMessage;
+                        $scope.$apply();
+                        $scope.scrollToBottom();
+                    });
                     $scope.messageText = "";
                 };
+
+                $scope.updateMessages = function updateMessages(messages) {
+                    var msgObj = {};
+
+                    // TODO: have API return object instead of array (keyed by 'id')
+                    //  so that this loop is unnecessary
+                    angular.forEach(messages, function(value, key) {
+                        // TODO: remove empty messages from API response
+                        //  so that this conditional is unnecessary
+                        if (value.content) {
+                            this[value.id] = value;
+                        }
+                    }, msgObj);
+
+                    $scope.messages = msgObj;
+                    $scope.$apply();
+                    $scope.scrollToBottomIfPrettyCloseAlready();
+
+                    if(!$scope.loaded) {
+                        $scope.scrollToBottom();
+                        $scope.loaded = true;
+                    }
+                };
+
+                proximo.listen($scope.updateMessages);
             });
     </script>
 </head>
 
 <body>
-    <div>
-        <div ng-include="'views/auth.html'"></div>
-        <div ng-if="$root.username" ng-include="'views/chat.html'"></div>
-    </div>
-
+    <div ng-include="'views/auth.html'"></div>
+    <div ng-if="$root.username" ng-include="'views/chat.html'" class="full-height"></div>
 </body>
 </html>

@@ -1,17 +1,18 @@
-<div ng-controller="ChatCtrl">
-    <div id="chat">
+<div class="full-height" ng-controller="ChatCtrl">
+    <div id="chat" class="full-height">
         <ul class="messages">
-            <li ng-repeat="message in messages" ng-class="{ 'myself': message.username == username }">
-                <div class="username">{{ message.username == username ? 'me' : message.username }}</div>
+            <li ng-repeat="message in messages" ng-class="{ 'myself': message.user.username == username }">
+                <div class="username">{{ message.user.username == username ? 'me' : message.user.username }}</div>
                 <div class="date">{{message.date}}</div>
+                <div class="icon"></div>
                 <div class="content">{{message.content}}</div>
-                <pre class="extended-data">{{message.data}}</pre>
+                <pre class="extended-data">{{message}}</pre>
             </li>
         </ul>
 
-        <form style="overflow: hidden" ng-submit="sendMessage()">
+        <form style="overflow: hidden" ng-submit="postMessage()">
             <input type="text" ng-model="messageText" name="content" id="content" placeholder="Type a Message"/>
-            <input type="submit" style="position:absolute;left:9999px;"/>
+            <input type="submit"/>
         </form>
     </div>
 </div>
