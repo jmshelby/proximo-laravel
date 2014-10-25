@@ -85,7 +85,7 @@ return array(
 
         'mongodb' => array(
             'driver'   => 'mongodb',
-            'host'     => 'localhost',
+            'host'     => 'hqopt1',
             'port'     => 27017,
             'database' => 'proximo_3'
             //'username' => 'username',
