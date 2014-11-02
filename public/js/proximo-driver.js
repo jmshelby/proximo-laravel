@@ -59,6 +59,9 @@ function Proximo(options)
 	this.longitude = null;
 	// TODO - prime above values with stored cookie values ?
 
+	// Lock for message callback
+	this.messageLocks = 0;
+
 }
 
 Proximo.prototype = {
@@ -80,6 +83,9 @@ Proximo.prototype = {
 
 	// Post Message with Text, callback optional
 	postMessage: function(messageText, callback) {
+		// Increment message locks
+		this.messageLocks++;
+
 		$.ajax({
 			type: 'POST',
 			url:  this.getMessagePostRequestUrl(),
@@ -183,6 +189,11 @@ Proximo.prototype = {
 	},
 	// Start a single Request to get Messages
 	_initiateMessageFetch: function() {
+		// Skip if still waiting for postMessage response
+		if(this.messageLocks) {
+			return;
+		}
+
 		$.ajax({
 			url:  this.getMessageFetchRequestUrl(),
 			data: this.getMessageFetchRequestParams(),
@@ -197,7 +208,7 @@ Proximo.prototype = {
 		var responseForCallback = response.response
 		this.lastMessageFetchResponse = responseForCallback;
 		// Callback client with new message set
-		if (this.messageFetchCallbacks) {
+		if (this.messageFetchCallbacks && !this.messageLocks) {
 			$.each(this.messageFetchCallbacks, function(key, callback) {
 				// TODO - make sure callback is valid
 				callback(responseForCallback);
@@ -223,6 +234,9 @@ Proximo.prototype = {
 			this.messagePostCallback = null;
 		}
 
+		// Decrement message locks
+		this.messageLocks--;
+
 		// TODO - Callback client(s) with new message set
 		// if (this.messageFetchCallbacks) {
 		// 	$.each(this.messageFetchCallbacks, function(key, callback) {
@@ -236,6 +250,9 @@ Proximo.prototype = {
 	_messagePostError: function() {
 		// Callback client with event
 		console.log("request for message post failed");
+
+		// Decrement message locks
+		this.messageLocks--;
 	},
 	// --- Session Stuff ---
 
