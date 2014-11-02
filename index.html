@@ -26,7 +26,18 @@
                         $rootScope.username = $scope.username;
                         proximo = new Proximo({username:$scope.username});
                     }
+
+                    // Save username to local storage
+                    if(typeof(Storage) !== "undefined") {
+                        localStorage.setItem("username", $scope.username);
+                    }
                 };
+
+                // Retrieve username from local storage
+                if(typeof(Storage) !== "undefined") {
+                    $scope.username = localStorage.getItem("username");
+                    $scope.login();
+                }
 
             })
 
