@@ -2,8 +2,10 @@
     <div id="chat" class="full-height">
         <ul class="messages">
             <li ng-repeat="message in messages" ng-class="{ 'myself': message.user.username == username }">
-                <div class="username">{{ message.user.username == username ? 'me' : message.user.username }}</div>
-                <div class="date">{{message.date}}</div>
+                <div ng-if="message.user != previousUser">
+                    <div class="username">{{ message.user.username == username ? 'me' : message.user.username }}</div>
+                    <div class="date">{{message.date}}</div>
+                </div>
                 <div class="icon"></div>
                 <div class="content">{{message.content}}</div>
                 <pre class="extended-data">{{message}}</pre>

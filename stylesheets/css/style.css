@@ -94,7 +94,6 @@ button {
     opacity: 0.4;
 }
 #chat .messages > li .username {
-    display: none;
     color: #999;
     font-size: 11px;
     padding-bottom: 5px;
@@ -104,7 +103,6 @@ button {
     float: right;
 }
 #chat .messages > li .date {
-    display: none;
     color: #999;
     font-size: 11px;
     position: absolute;
@@ -113,6 +111,7 @@ button {
     text-align: center;
 }
 #chat .messages > li .icon {
+    display: none;
     border-radius: 5px;
     border: 2px solid #bbb;
     height: 20px;
@@ -130,7 +129,7 @@ button {
     clear: both;
     background: #eee;
     border-radius: 7px;
-    margin: 3px 30px;
+    margin: 3px 6px;
     padding: 8px 12px;
     opacity: 1;
     max-height: 150px;
